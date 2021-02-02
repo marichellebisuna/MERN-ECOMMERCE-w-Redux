@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "MERN Shop with Redux",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "server": "nodemon server/server",
     "client": "npm start --prefix client",
