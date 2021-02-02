@@ -1,6 +1,7 @@
 import express from 'express';
 import products from './data/products.js';
 import MongoDb from './config/db.js';
+import colors from 'colors';
 
 MongoDb();
 
@@ -22,5 +23,5 @@ app.get('/api/products/:id', (req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server connected to port ${PORT}`);
+  console.log(`Server connected to port ${PORT}`.yellow.bold);
 });
