@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import Product from '../models/productModel.js';
 import asyncHandler from 'express-async-handler';
+import createError from 'http-errors';
 
 router.get(
   '/',
@@ -18,7 +19,8 @@ router.get(
     if (product) {
       res.json(product);
     }
-    res.status(404).json({ message: 'Product not found' });
+    res.status(404);
+    throw next(createError.NotFound('Product not found.'));
   })
 );
 
