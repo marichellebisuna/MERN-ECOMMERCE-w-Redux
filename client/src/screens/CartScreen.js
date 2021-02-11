@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { addToCart } from '../actions/cartActions';
+import { addToCart, removeFromCart } from '../actions/cartActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom';
@@ -31,7 +31,7 @@ const CartScreen = ({ match, location, history }) => {
   }, [dispatch, productId, qty]);
 
   const removeFromCartHandler = (id) => {
-    console.log('remove');
+    dispatch(removeFromCart(id));
   };
   const checkoutHandler = () => {
     history.push('/login?redirect=shipping');
@@ -103,10 +103,9 @@ const CartScreen = ({ match, location, history }) => {
                 ) items
               </h3>
               $
-              {shoppingCart.reduce(
-                (acc, item) => acc + item.qty * item.price,
-                0
-              )}
+              {shoppingCart
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2)}
             </ListGroup.Item>
             <ListGroup.Item>
               <Button
