@@ -1,16 +1,18 @@
 import express from 'express';
-import products from './data/products.js';
 import MongoDb from './config/db.js';
-import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import morgan from 'morgan';
+import colors from 'colors';
 
 MongoDb();
 
 const app = express();
-//app.use(morgan('dev'));
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 app.use(express.json());
 
 app.use('/api/products', productRoutes);
