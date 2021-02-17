@@ -3,17 +3,19 @@ import products from './data/products.js';
 import MongoDb from './config/db.js';
 import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import morgan from 'morgan';
 
 MongoDb();
 
 const app = express();
-
-app.get('/', (req, res, next) => {
-  res.send('api is running.');
-});
+//app.use(morgan('dev'));
+app.use(express.json());
 
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+
 app.use(notFound);
 app.use(errorHandler);
 

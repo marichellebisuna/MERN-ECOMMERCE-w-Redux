@@ -10,14 +10,22 @@ import Message from '../components/Message';
 const ProductScreen = ({ history, match }) => {
   const dispatch = useDispatch();
   const [qty, setQty] = useState(1);
+
   const productDetails = useSelector((state) => state.productDetails);
+  const cart = useSelector((state) => state.cart);
+  const { shoppingCart } = cart;
+  console.log(shoppingCart);
+  console.log(productDetails.product);
   const { loading, error, product } = productDetails;
+  const stock = product.countInStock - product.qty;
+
   useEffect(() => {
     dispatch(listProductDetails(match.params.id));
   }, [dispatch, match]);
-  const addToCartHandler = () => {
+  const addToCartHandler = (qty) => {
     history.push(`/cart/${match.params.id}/?qty=${qty}`);
   };
+  console.log(productDetails.product);
   return (
     <>
       <Link className='btn btn-light my-3' to='/'>
@@ -78,7 +86,7 @@ const ProductScreen = ({ history, match }) => {
                         value={qty}
                         onChange={(e) => setQty(e.target.value)}
                       >
-                        {[...Array(product.countInStock).keys()].map((x) => (
+                        {[...Array(stock).keys()].map((x) => (
                           <option key={x + 1} value={x + 1}>
                             {x + 1}
                           </option>
@@ -90,7 +98,7 @@ const ProductScreen = ({ history, match }) => {
               )}
               <ListGroup.Item>
                 <Button
-                  onClick={addToCartHandler}
+                  onClick={() => addToCartHandler(qty)}
                   type='button'
                   className='btn-block'
                   disabled={product.countInStock === 0}

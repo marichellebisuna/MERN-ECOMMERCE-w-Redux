@@ -1,16 +1,15 @@
-import createError from 'http-errors';
-
 const notFound = (req, res, next) => {
-  next(createError.NotFound(`Page not found.- ${req.originalUrl}`));
+  const error = new Error(`Not Found-${req.originalUrl} `);
+  res.status(404);
+  next(error);
 };
 
 const errorHandler = (err, req, res, next) => {
-  res.status(err.status || 500);
-  res.send({
-    error: {
-      status: err.status || 500,
-      message: err.message,
-    },
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  res.status(statusCode);
+  res.json({
+    message: err.message,
+    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 };
 
