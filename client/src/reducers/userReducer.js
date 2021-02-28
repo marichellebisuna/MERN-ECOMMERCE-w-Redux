@@ -63,8 +63,8 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
   switch (action.type) {
     case USER_DETAILS_REQUEST:
       return {
-        loading: true,
         ...state,
+        loading: true,
       };
     case USER_DETAILS_SUCCESS:
       return {
