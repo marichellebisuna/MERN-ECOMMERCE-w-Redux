@@ -61,6 +61,7 @@ const OrderScreen = ({ match }) => {
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
+    console.log(paymentResult);
   };
   return loading ? (
     <Loader />
@@ -85,7 +86,7 @@ const OrderScreen = ({ match }) => {
               <p>
                 <strong>Address:</strong>
                 {order.shippingAddress.address}, {order.shippingAddress.city}
-                {order.shippingAddress.postalCode}{' '}
+                {order.shippingAddress.postalCode},{' '}
                 {order.shippingAddress.country}
               </p>
               {order.isDelivered ? (
@@ -176,14 +177,18 @@ const OrderScreen = ({ match }) => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              {!order.isPaid && <Loader />}
-              {!sdkReady ? (
-                <Loader />
-              ) : (
-                <PayPalButton
-                  amount={order.totalPrice}
-                  onSuccess={successPaymentHandler}
-                />
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton
+                      amount={order.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                </ListGroup.Item>
               )}
             </ListGroup>
           </Card>
