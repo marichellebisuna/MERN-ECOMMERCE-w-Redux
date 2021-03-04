@@ -23,6 +23,7 @@ import {
   USER_UPDATE_FAIL,
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
+  USER_UPDATE_RESET,
 } from '../constants/userConstants';
 import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
@@ -246,6 +247,9 @@ export const updateUser = (user) => async (dispatch, getState) => {
     dispatch({
       type: USER_DETAILS_SUCCESS,
       payload: data,
+    });
+    dispatch({
+      type: USER_UPDATE_RESET,
     });
   } catch (error) {
     dispatch({
