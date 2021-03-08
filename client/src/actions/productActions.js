@@ -59,6 +59,7 @@ export const listProductDetails = (id) => async (dispatch, getState) => {
 export const deleteProduct = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: PRODUCT_DELETE_REQUEST });
+
     const {
       userLogin: { userInfo },
     } = getState();
@@ -69,6 +70,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
       },
     };
     await axios.delete(`/api/products/${id}`, config);
+
     dispatch({
       type: PRODUCT_DELETE_SUCCESS,
     });

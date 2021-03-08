@@ -31,7 +31,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
       shippingPrice,
       totalPrice,
     });
+
     const createdOrder = await order.save();
+
     res.status(201).json(createdOrder);
   }
 });
@@ -68,7 +70,9 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
       update_time: req.body.update_time,
       email_address: req.body.payer.email_address,
     };
+
     const updatedOrder = await order.save();
+
     res.json(updatedOrder);
   } else {
     res.status(404);
@@ -83,4 +87,19 @@ const getMyOrders = asyncHandler(async (req, res) => {
   const orders = await Order.find({ user: req.user._id });
   res.json(orders);
 });
-export { addOrderItems, getOrderById, updateOrderToPaid, getMyOrders };
+
+// @desc    Get all orders
+// @route   GET /api/orders
+// @access  Private/Admin
+const getOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate('user', 'id name');
+  res.json(orders);
+});
+
+export {
+  addOrderItems,
+  getOrderById,
+  updateOrderToPaid,
+  getMyOrders,
+  getOrders,
+};

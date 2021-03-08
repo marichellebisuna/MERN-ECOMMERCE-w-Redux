@@ -14,6 +14,11 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   { timestamps: true }
 );
@@ -75,6 +80,6 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Product = mongoose.model('product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
 export default Product;
