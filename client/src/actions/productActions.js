@@ -21,10 +21,11 @@ import {
 import axios from 'axios';
 import { logout } from './userActions';
 
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (keyword = '') => async (dispatch) => {
   dispatch({ type: PRODUCT_LIST_REQUEST });
   try {
-    const { data } = await axios.get('/api/products');
+    const { data } = await axios.get(`/api/products?keyword=${keyword}`);
+
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
       payload: data,
