@@ -6,6 +6,7 @@ import Product from '../components/Product';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
+import ProductCarousel from '../components/ProductCarousel';
 import { listProducts } from '../actions/productActions';
 
 const HomeScreen = ({ match }) => {
@@ -23,9 +24,13 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
-      <Link to='/' className='btn btn-light'>
-        Go Back
-      </Link>
+      {!keyword ? (
+        <ProductCarousel />
+      ) : (
+        <Link to='/' className='btn btn-light'>
+          Go Back
+        </Link>
+      )}
 
       <h1>Latest Products</h1>
       {loading ? (
