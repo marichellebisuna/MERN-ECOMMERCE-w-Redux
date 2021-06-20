@@ -5,11 +5,12 @@ import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../actions/userActions';
 import SearchBox from './SearchBox';
-
 const Header = () => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const cart = useSelector((state) => state.cart);
+  const { shoppingCart } = cart;
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -27,7 +28,11 @@ const Header = () => {
             <Nav className='ml-auto'>
               <LinkContainer to='/cart'>
                 <Nav.Link>
-                  <i className='fas fa-shopping-cart'></i>Cart
+                  <i className='fas fa-shopping-cart'></i>
+                  <span className='pl-1'>Cart</span>
+                  {shoppingCart.length > 0 && (
+                    <span className='badge'>{shoppingCart.length}</span>
+                  )}
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (

@@ -27,7 +27,11 @@ const OrderScreen = ({ match, history }) => {
   const { order, loading, error } = orderDetails;
 
   const orderPay = useSelector((state) => state.orderPay);
-  const { loading: loadingPay, success: successPay } = orderPay;
+  const {
+    loading: loadingPay,
+    success: successPay,
+    error: errorPay,
+  } = orderPay;
 
   const orderDeliver = useSelector((state) => state.orderDeliver);
   const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
@@ -43,6 +47,7 @@ const OrderScreen = ({ match, history }) => {
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
+    order.taxPrice = addDecimals(Number((0.15 * order.itemsPrice).toFixed(2)));
     order.shippingPrice = addDecimals(order.itemsPrice > 100 ? 100 : 0);
   }
 
@@ -62,7 +67,12 @@ const OrderScreen = ({ match, history }) => {
       document.body.appendChild(script);
     };
 
-    if (!order || successPay || successDeliver) {
+    if (
+      !order ||
+      successPay ||
+      (order && order._id !== orderId) ||
+      successDeliver
+    ) {
       dispatch({ type: ORDER_PAY_RESET });
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
@@ -73,7 +83,7 @@ const OrderScreen = ({ match, history }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, orderId, successPay, successDeliver, order]);
+  }, [dispatch, history, userInfo, order, orderId, successPay, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
@@ -158,7 +168,7 @@ const OrderScreen = ({ match, history }) => {
                           </Col>
                           <Col md={4}>
                             {item.qty} x ${item.price} = $
-                            {item.qty * item.price}
+                            {(item.qty * item.price).toFixed(2)}
                           </Col>
                         </Row>
                       </ListGroup.Item>
@@ -202,6 +212,7 @@ const OrderScreen = ({ match, history }) => {
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
+                  {errorPay && <Message variant='danger'>{errorPay}</Message>}
                   {!sdkReady ? (
                     <Loader />
                   ) : (

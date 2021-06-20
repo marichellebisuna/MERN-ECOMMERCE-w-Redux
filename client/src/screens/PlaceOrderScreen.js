@@ -2,13 +2,18 @@ import React, { useEffect } from 'react';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
+import Loader from '../components/Loader';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
 import { Link } from 'react-router-dom';
+import { ORDER_CREATE_RESET } from '../constants/orderConstants';
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  if (!cart.paymentMethod) {
+    history.push('/payment');
+  }
 
   //Calculate prices
   const addDecimals = (num) => {
@@ -27,18 +32,20 @@ const PlaceOrderScreen = ({ history }) => {
   ).toFixed(2);
 
   const orderCreate = useSelector((state) => state.orderCreate);
-  const { order, success, error } = orderCreate;
+  const { loading, order, success, error } = orderCreate;
 
   useEffect(() => {
     if (success) {
       history.push(`/order/${order._id}`);
+      dispatch({ type: ORDER_CREATE_RESET });
     }
     // eslint-disable-next-line
-  }, [history, success]);
+  }, [history, dispatch, order, success]);
 
   const placeOrderHandler = () => {
     dispatch(
       createOrder({
+        ...cart,
         orderItems: cart.shoppingCart,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
@@ -96,7 +103,7 @@ const PlaceOrderScreen = ({ history }) => {
                           </Col>
                           <Col md={4}>
                             {item.qty} x ${item.price} = $
-                            {item.qty * item.price}
+                            {(item.qty * item.price).toFixed(2)}
                           </Col>
                         </Row>
                       </ListGroup.Item>
@@ -150,6 +157,8 @@ const PlaceOrderScreen = ({ history }) => {
                   Place Order
                 </Button>
               </ListGroup.Item>
+              {loading && <Loader />}
+              {error && <Message variant='danger'>{error}</Message>}
             </ListGroup>
           </Card>
         </Col>

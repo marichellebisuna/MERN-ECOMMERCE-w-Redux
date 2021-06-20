@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {
-  Row,
-  Col,
-  Image,
-  ListGroup,
-  Button,
-  Form,
-  Card,
-} from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
@@ -38,22 +30,22 @@ const ProductScreen = ({ history, match }) => {
     error: errorProductReview,
   } = productReviewCreate;
 
-  const cart = useSelector((state) => state.cart);
-  const { shoppingCart } = cart;
+  //const cart = useSelector((state) => state.cart);
+  //const { shoppingCart } = cart;
 
   const { loading, error, product } = productDetails;
-  const stock = product.countInStock - product.qty;
+  //const stock = product.countInStock - product.qty;
 
   useEffect(() => {
     if (successProductReview) {
       setRating(0);
       setComment('');
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-  }, [dispatch, match, successProductReview]);
+  }, [dispatch, match, successProductReview, product._id]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}/?qty=${qty}`);

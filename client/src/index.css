@@ -12,6 +12,7 @@ h2 {
   font-size: 1.4rem;
   padding: 0.5rem 0;
 }
+
 .rating span {
   margin: 0.1rem;
 }
@@ -46,4 +47,25 @@ h2 {
   .carousel-caption h2 {
     font-size: 2.5vw;
   }
+}
+
+.badge {
+  background-color: red;
+  color: #fff;
+  padding: 0.2rem 1rem;
+  border-radius: 50%;
+
+  font-size: 1.4rem;
+  position: relative;
+  top: -50%;
+  left: -3px;
+}
+
+.inputQty {
+  width: 50px;
+}
+
+.trash {
+  position: relative;
+  top: -12px;
 }

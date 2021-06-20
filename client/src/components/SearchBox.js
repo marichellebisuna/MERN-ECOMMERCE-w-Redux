@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
 const SearchBox = ({ history }) => {
-  const [keyword, setKeyword] = useState('');
-
+  const [name, setName] = useState('');
+  const trim = name.trim();
   const submitHandler = (e) => {
     e.preventDefault();
-    if (keyword.trim()) {
-      history.push(`/search/${keyword}`);
-    } else {
-      history.push('/');
+    if (name.trim()) {
+      history.push(`/search/name/${name}`);
     }
+    history.push(`/search/name/${name}`);
   };
 
   return (
@@ -18,7 +17,8 @@ const SearchBox = ({ history }) => {
       <Form.Control
         type='text'
         name='q'
-        onChange={(e) => setKeyword(e.target.value)}
+        id='q'
+        onChange={(e) => setName(e.target.value)}
         placeholder='Search Products...'
         className='mr-sm-2 ml-sm-5'
       ></Form.Control>

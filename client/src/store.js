@@ -9,6 +9,7 @@ import {
   productUpdateReducer,
   productReviewCreateReducer,
   productTopRatedReducer,
+  productCategoryListReducer,
 } from './reducers/productReducers';
 import { cartReducer } from './reducers/cartReducer';
 import {
@@ -19,7 +20,7 @@ import {
   userListReducer,
   userDeleteReducer,
   userUpdateReducer,
-} from './reducers/userReducer';
+} from './reducers/userReducers';
 import {
   orderCreateReducer,
   orderDetailsReducer,
@@ -31,6 +32,7 @@ import {
 
 const reducer = combineReducers({
   productList: productListReducer,
+  productCategoryList: productCategoryListReducer,
   productDetails: productDetailsReducer,
   productDelete: productDeleteReducer,
   productCreate: productCreateReducer,
@@ -58,14 +60,15 @@ const cartItemsFromStorage = localStorage.getItem('shoppingCart')
   : [];
 const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
   ? JSON.parse(localStorage.getItem('shippingAddress'))
-  : [];
+  : {};
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
-  : {};
+  : null;
 const initialState = {
   cart: {
     shoppingCart: cartItemsFromStorage,
     shippingAddress: shippingAddressFromStorage,
+    paymentMethod: 'Paypal',
   },
   userLogin: { userInfo: userInfoFromStorage },
 };

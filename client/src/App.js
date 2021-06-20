@@ -1,7 +1,9 @@
+import React, { useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Container } from 'react-bootstrap';
 import HomeScreen from './screens/HomeScreen';
+import SearchScreen from './screens/SearchScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -17,8 +19,14 @@ import UserEditScreen from './screens/UserEditScreen';
 import ProductListScreen from './screens/ProductListScreen';
 import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
+import { listProductCategories } from './actions/productActions';
+import { useDispatch } from 'react-redux';
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(listProductCategories());
+  }, [dispatch]);
   return (
     <Router>
       <Header />
@@ -52,7 +60,17 @@ function App() {
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/' component={HomeScreen} exact />
-          <Route path='/search/:keyword' component={HomeScreen} exact />
+          <Route path='/search/name/:name?' component={SearchScreen} exact />
+          <Route
+            path='/search/category/:category'
+            component={SearchScreen}
+            exact
+          />
+          <Route
+            path='/search/category/:category/name/:name'
+            component={SearchScreen}
+            exact
+          />
           <Route path='/page/:pageNumber' component={HomeScreen} exact />
           <Route
             path='/search/:keyword/page/:pageNumber'

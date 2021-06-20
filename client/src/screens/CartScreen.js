@@ -53,11 +53,16 @@ const CartScreen = ({ match, location, history }) => {
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
                   <Col md={3}>
-                    <Link to={`/product/${item.product}`}>{item.name}</Link>
+                    <p>
+                      {' '}
+                      <Link to={`/product/${item.product}`}>{item.name}</Link>
+                    </p>
+                    <p>InStock left: {item.countInStock}</p>
                   </Col>
-                  <Col md={2}>${item.price}</Col> @ $
-                  {(item.price * item.qty).toFixed(2)}
-                  <Col md={2}>
+
+                  <Col md={2}>${item.price}</Col>
+
+                  {/* <Col md={2}>
                     {item.countInStock !== 0 && (
                       <Form.Control
                         as='select'
@@ -75,8 +80,25 @@ const CartScreen = ({ match, location, history }) => {
                         ))}
                       </Form.Control>
                     )}
-                  </Col>
+                  </Col> */}
                   <Col md={1}>
+                    <input
+                      className='inputQty'
+                      type='text'
+                      id='qty'
+                      name='qty'
+                      value={item.qty}
+                      onChange={(e) =>
+                        dispatch(
+                          addToCart(item.product, Number(e.target.value))
+                        )
+                      }
+                    />
+                  </Col>
+                  <Col className='ml-4' md={2}>
+                    @ ${(item.price * item.qty).toFixed(2)}
+                  </Col>
+                  <Col className='trash'>
                     <Button
                       type='button'
                       variant='light'
@@ -84,10 +106,6 @@ const CartScreen = ({ match, location, history }) => {
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
-                    {item.countInStock - item.qty}
-                    {item.countInStock === 0
-                      ? 'count in stock left: 0'
-                      : ': countInStock left '}
                   </Col>
                 </Row>
               </ListGroup.Item>

@@ -17,7 +17,7 @@ const products = [
     description:
       'Introducing the iPhone 11 Pro. A transformative triple-camera system that adds tons of capability without complexity. An unprecedented leap in battery life',
     brand: 'Apple',
-    category: 'Electronics',
+    category: 'Mobile Phones',
     price: 599.99,
     countInStock: 7,
     rating: 4.0,
@@ -29,7 +29,7 @@ const products = [
     description:
       'Characterized by versatile imaging specs, the Canon EOS 80D further clarifies itself using a pair of robust focusing systems and an intuitive design',
     brand: 'Cannon',
-    category: 'Electronics',
+    category: 'Camera',
     price: 929.99,
     countInStock: 5,
     rating: 3,
