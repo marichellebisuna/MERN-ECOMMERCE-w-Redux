@@ -13,17 +13,51 @@ const ShippingScreen = ({ history }) => {
   }
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
+  const userAddressMap = useSelector((state) => state.userAddressMap);
+  const { address: addressMap } = userAddressMap;
+
   const [address, setAddress] = useState(shippingAddress.address);
   const [city, setCity] = useState(shippingAddress.city);
   const [postalCode, setPostalCode] = useState(shippingAddress.postalCode);
   const [country, setCountry] = useState(shippingAddress.country);
+  const [lat, setLat] = useState(shippingAddress.lat);
+  const [lng, setLng] = useState(shippingAddress.lng);
 
   const dispatch = useDispatch();
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    // const newLat = addressMap ? addressMap.lat : lat;
+    // const newLng = addressMap ? addressMap.lng : lng;
+    // if (addressMap) {
+    //   setLat(address.lat);
+    //   setLng(addressMap.lng);
+    // }
+    // let moveOn = true;
+    // if (!newLat || !newLng) {
+    //   moveOn = window.confirm(
+    //     'You did not set your location on map. Continue?'
+    //   );
+    // }
+    // if (moveOn) {
+    dispatch(
+      saveShippingAddress({
+        address,
+        city,
+        postalCode,
+        country,
+        // lat: newLat,
+        // lng: newLng,
+      })
+    );
     history.push('/payment');
+    // }
   };
+  // const chooseOnMap = () => {
+  //   dispatch(
+  //     saveShippingAddress({ address, city, postalCode, country, lat, lng })
+  //   );
+  //   history.push('/map');
+  // };
 
   return (
     <FormContainer>
@@ -70,6 +104,16 @@ const ShippingScreen = ({ history }) => {
             onChange={(e) => setCountry(e.target.value)}
           ></Form.Control>
         </Form.Group>
+        {/* <div>
+          <label htmlFor='chooseOnMap'>Location</label> */}
+        {/* <button type='button' onClick={chooseOnMap}>
+            Choose On Map
+          </button> */}
+        {/* <Button type='button' variant='secondary' onClick={chooseOnMap}>
+            Choose On Map
+          </Button>
+        </div> */}
+
         <Button type='submit' variant='primary'>
           Continue
         </Button>

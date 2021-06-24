@@ -21,6 +21,7 @@ import ProductEditScreen from './screens/ProductEditScreen';
 import OrderListScreen from './screens/OrderListScreen';
 import { listProductCategories } from './actions/productActions';
 import { useDispatch } from 'react-redux';
+import MapScreen from './screens/MapScreen';
 
 function App() {
   const dispatch = useDispatch();
@@ -58,6 +59,7 @@ function App() {
             exact
           />
           <Route path='/profile' component={ProfileScreen} />
+          <Route path='/map' component={MapScreen} />
           <Route path='/product/:id' component={ProductScreen} />
           <Route path='/cart/:id?' component={CartScreen} />
           <Route path='/' component={HomeScreen} exact />
