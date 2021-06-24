@@ -28,12 +28,20 @@ import axios from 'axios';
 import { logout } from './userActions';
 
 export const listProducts =
-  ({ name = '', category = '', pageNumber = '' }) =>
+  ({
+    name = '',
+    category = '',
+    pageNumber = '',
+    order = '',
+    min = 0,
+    max = 0,
+    rating = 0,
+  }) =>
   async (dispatch) => {
     dispatch({ type: PRODUCT_LIST_REQUEST });
     try {
       const { data } = await axios.get(
-        `/api/products?name=${name}&category=${category}&pageNumber=${pageNumber}`
+        `/api/products?name=${name}&category=${category}&min=${min}&max=${max}&rating=${rating}&order=${order}&pageNumber=${pageNumber}`
       );
 
       dispatch({

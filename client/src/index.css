@@ -12,9 +12,82 @@ h2 {
   font-size: 1.4rem;
   padding: 0.5rem 0;
 }
+a.active,
+a:hover {
+  color: #4bbf73 !important;
+  /* padding-left: 10px; */
+  text-decoration: none !important;
+  transition: all 0.2s;
+  font-weight: bold;
+}
 
-.rating span {
-  margin: 0.1rem;
+aside {
+  position: fixed;
+  width: 22rem;
+  height: 100vh;
+  background-color: #e9e8e6;
+  z-index: 1000;
+  transform: translateX(-30rem);
+  transition: all 0.5s;
+}
+aside .padcat {
+  padding-top: 2rem;
+}
+aside.open {
+  transform: translateX(0);
+  transition: ease-in;
+  transition: all 0.5s;
+}
+
+button.open-sidebar {
+  font-size: 2rem;
+  margin: 0.2rem 0.5rem;
+  background: none;
+  color: #ffffff;
+  border-style: solid;
+  border-color: #343a40;
+  cursor: pointer;
+}
+button.open-sidebar:hover {
+  border-color: #ffffff;
+  border-style: solid;
+}
+
+aside li {
+  list-style: none;
+  display: flex;
+  font-size: 1rem;
+  justify-content: space-between;
+  margin-left: 15px;
+}
+
+aside a:hover {
+  color: #4bbf73;
+  text-decoration: none;
+  padding-left: 10px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+button.close-sidebar {
+  font-size: 1rem;
+  margin-right: 2rem;
+  padding: 0.3rem 0.8rem;
+  border-style: solid;
+  border-radius: 10%;
+  border-color: #343a40;
+  color: #343a40;
+  background-color: #e9e8e6;
+}
+button.close-sidebar:hover {
+  color: #4bbf73;
+  border-color: #4bbf73;
+  border-style: solid;
+}
+
+.active {
+  color: #4bbf73;
+  font-weight: 900;
 }
 
 /* carousel */

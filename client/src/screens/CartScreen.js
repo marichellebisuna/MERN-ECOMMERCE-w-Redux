@@ -3,15 +3,7 @@ import { addToCart, removeFromCart } from '../actions/cartActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import { Link } from 'react-router-dom';
-import {
-  Button,
-  ListGroup,
-  Row,
-  Col,
-  Image,
-  Form,
-  Card,
-} from 'react-bootstrap';
+import { Button, ListGroup, Row, Col, Image, Card } from 'react-bootstrap';
 
 const CartScreen = ({ match, location, history }) => {
   const productId = match.params.id;

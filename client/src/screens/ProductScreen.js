@@ -9,42 +9,43 @@ import {
   listProductDetails,
   createProductReview,
 } from '../actions/productActions';
-import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
+
 import Meta from '../components/Meta';
+import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 
 const ProductScreen = ({ history, match }) => {
-  const dispatch = useDispatch();
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
+  const dispatch = useDispatch();
+
   const productDetails = useSelector((state) => state.productDetails);
+  const { loading, error, product } = productDetails;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  //const cart = useSelector((state) => state.cart);
+  //const { shoppingCart } = cart;
+  //const stock = product.countInStock - product.qty;
+
   const productReviewCreate = useSelector((state) => state.productReviewCreate);
   const {
     success: successProductReview,
-    loading: loadingProductReview,
     error: errorProductReview,
+    loading: loadingProductReview,
   } = productReviewCreate;
-
-  //const cart = useSelector((state) => state.cart);
-  //const { shoppingCart } = cart;
-
-  const { loading, error, product } = productDetails;
-  //const stock = product.countInStock - product.qty;
 
   useEffect(() => {
     if (successProductReview) {
+      alert('Review Submitted!');
       setRating(0);
       setComment('');
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-    if (!product._id || product._id !== match.params.id) {
-      dispatch(listProductDetails(match.params.id));
-    }
+
+    dispatch(listProductDetails(match.params.id));
   }, [dispatch, match, successProductReview, product._id]);
 
   const addToCartHandler = () => {
@@ -53,12 +54,11 @@ const ProductScreen = ({ history, match }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(
-      createProductReview(match.params.id, {
-        rating,
-        comment,
-      })
-    );
+    if (comment && rating) {
+      dispatch(createProductReview(match.params.id, { rating, comment }));
+    } else {
+      alert('Please enter comment and rating');
+    }
   };
 
   return (
@@ -85,7 +85,7 @@ const ProductScreen = ({ history, match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Rating
-                    value={product.rating}
+                    rating={product.rating}
                     text={`${product.numReviews} reviews`}
                   />
                 </ListGroup.Item>
@@ -155,7 +155,7 @@ const ProductScreen = ({ history, match }) => {
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
-                    <Rating value={review.rating} />
+                    <Rating rating={review.rating} />
                     <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
@@ -164,7 +164,7 @@ const ProductScreen = ({ history, match }) => {
                   <h2>Write a Customer Review</h2>
                   {successProductReview && (
                     <Message variant='success'>
-                      Review submitted successfully
+                      Review submitted successfully!
                     </Message>
                   )}
                   {loadingProductReview && <Loader />}
@@ -198,7 +198,7 @@ const ProductScreen = ({ history, match }) => {
                         ></Form.Control>
                       </Form.Group>
                       <Button
-                        disabled={loadingProductReview}
+                        //disabled={loadingProductReview}
                         type='submit'
                         variant='primary'
                       >

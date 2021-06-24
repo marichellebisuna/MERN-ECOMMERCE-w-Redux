@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 
 const SearchBox = ({ history }) => {
   const [name, setName] = useState('');
-  const trim = name.trim();
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (name.trim()) {

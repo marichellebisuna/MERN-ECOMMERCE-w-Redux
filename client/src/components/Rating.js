@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Rating = ({ value, text, color }) => {
+const Rating = ({ rating, text, color, caption }) => {
   return (
-    <div className='rating'>
+    <div className='rate'>
       <span>
         <i
           style={{ color }}
           className={
-            value >= 1
+            rating >= 1
               ? 'fas fa-star'
-              : value >= 0.5
+              : rating >= 0.5
               ? 'fas fa-star-half-alt'
               : 'far fa-star'
           }
@@ -20,9 +20,9 @@ const Rating = ({ value, text, color }) => {
         <i
           style={{ color }}
           className={
-            value >= 2
+            rating >= 2
               ? 'fas fa-star'
-              : value >= 1.5
+              : rating >= 1.5
               ? 'fas fa-star-half-alt'
               : 'far fa-star'
           }
@@ -32,9 +32,9 @@ const Rating = ({ value, text, color }) => {
         <i
           style={{ color }}
           className={
-            value >= 3
+            rating >= 3
               ? 'fas fa-star'
-              : value >= 2.5
+              : rating >= 2.5
               ? 'fas fa-star-half-alt'
               : 'far fa-star'
           }
@@ -44,9 +44,9 @@ const Rating = ({ value, text, color }) => {
         <i
           style={{ color }}
           className={
-            value >= 4
+            rating >= 4
               ? 'fas fa-star'
-              : value >= 3.5
+              : rating >= 3.5
               ? 'fas fa-star-half-alt'
               : 'far fa-star'
           }
@@ -56,15 +56,17 @@ const Rating = ({ value, text, color }) => {
         <i
           style={{ color }}
           className={
-            value >= 5
+            rating >= 5
               ? 'fas fa-star'
-              : value >= 4.5
+              : rating >= 4.5
               ? 'fas fa-star-half-alt'
               : 'far fa-star'
           }
         ></i>
       </span>
       {text && text}
+
+      {caption && <span>{caption}</span>}
     </div>
   );
 };
@@ -74,7 +76,7 @@ Rating.defaultProps = {
 };
 
 Rating.propTypes = {
-  value: PropTypes.number.isRequired,
+  rating: PropTypes.number.isRequired,
   text: PropTypes.string.isRequired,
   color: PropTypes.string,
 };

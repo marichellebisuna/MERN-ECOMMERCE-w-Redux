@@ -17,7 +17,7 @@ const Product = ({ product }) => {
         <Card.Text as='div'>
           <div className='my-3'>
             <Rating
-              value={product.rating}
+              rating={product.rating}
               text={`${product.numReviews} reviews`}
             />
           </div>

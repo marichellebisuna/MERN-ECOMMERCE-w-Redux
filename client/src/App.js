@@ -30,6 +30,7 @@ function App() {
   return (
     <Router>
       <Header />
+
       <main className='py-3'>
         <Container>
           <Route path='/order/:id' component={OrderScreen} />
@@ -68,6 +69,11 @@ function App() {
           />
           <Route
             path='/search/category/:category/name/:name'
+            component={SearchScreen}
+            exact
+          />
+          <Route
+            path='/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order'
             component={SearchScreen}
             exact
           />
