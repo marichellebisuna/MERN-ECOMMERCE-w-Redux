@@ -8,6 +8,8 @@ import Loader from '../components/Loader';
 import { Link, useParams } from 'react-router-dom';
 import { prices, ratings } from '../utils';
 import Rating from '../components/Rating';
+import { Pagination } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const SearchScreen = (props) => {
   const {
@@ -17,13 +19,14 @@ const SearchScreen = (props) => {
     max = 0,
     rating = 0,
     order = 'newest',
+    pageNumber = 1,
   } = useParams();
 
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
-  console.log(products);
+  const { loading, error, products, page, pages } = productList;
+  console.log(pages);
   const productCategoryList = useSelector((state) => state.productCategoryList);
   const {
     loading: loadingCategories,
@@ -35,6 +38,7 @@ const SearchScreen = (props) => {
   useEffect(() => {
     dispatch(
       listProducts({
+        pageNumber,
         name: name !== 'all' ? name : '',
         category: category !== 'all' ? category : '',
         min,
@@ -43,16 +47,17 @@ const SearchScreen = (props) => {
         order,
       })
     );
-  }, [dispatch, name, category, min, max, rating, order]);
+  }, [dispatch, name, category, min, max, rating, order, pageNumber]);
 
   const getFilterUrl = (filter) => {
+    const filterPage = filter.page || pageNumber;
     const filterCategory = filter.category || category;
     const filterName = filter.name || name;
     const filterMin = filter.min ? filter.min : filter.min === 0 ? 0 : min;
     const filterMax = filter.max ? filter.max : filter.max === 0 ? 0 : max;
     const filterRating = filter.rating || rating;
     const sortOrder = filter.order || order;
-    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}`;
+    return `/search/category/${filterCategory}/name/${filterName}/min/${filterMin}/max/${filterMax}/rating/${filterRating}/order/${sortOrder}/pageNumber/${filterPage}`;
   };
 
   return (
@@ -157,13 +162,29 @@ const SearchScreen = (props) => {
           ) : products.length === 0 ? (
             <h4>No product found.</h4>
           ) : (
-            <Row xl={3} lg={3} md={3} sm={2} xs={1}>
-              {products.map((product) => (
-                <Col key={product._id}>
-                  <Product product={product} />
-                </Col>
-              ))}
-            </Row>
+            <>
+              <Row xl={3} lg={3} md={3} sm={2} xs={1}>
+                {products.map((product) => (
+                  <Col key={product._id}>
+                    <Product product={product} />
+                  </Col>
+                ))}
+              </Row>
+              {pages > 1 && (
+                <Pagination>
+                  {[...Array(pages).keys()].map((x) => (
+                    <LinkContainer
+                      key={x + 1}
+                      to={getFilterUrl({ page: x + 1 })}
+                    >
+                      <Pagination.Item active={x + 1 === page}>
+                        {x + 1}
+                      </Pagination.Item>
+                    </LinkContainer>
+                  ))}
+                </Pagination>
+              )}
+            </>
           )}
         </Col>
       </Row>

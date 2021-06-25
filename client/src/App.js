@@ -54,7 +54,7 @@ function App() {
             exact
           />
           <Route
-            path='/admin/productlist/:pageNumber'
+            path='/admin/productlist/pageNumber/:pageNumber'
             component={ProductListScreen}
             exact
           />
@@ -75,13 +75,13 @@ function App() {
             exact
           />
           <Route
-            path='/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order'
+            path='/search/category/:category/name/:name/min/:min/max/:max/rating/:rating/order/:order/pageNumber/:pageNumber'
             component={SearchScreen}
             exact
           />
           <Route path='/page/:pageNumber' component={HomeScreen} exact />
           <Route
-            path='/search/:keyword/page/:pageNumber'
+            path='/search/name/:name/page/:pageNumber'
             component={HomeScreen}
             exact
           />

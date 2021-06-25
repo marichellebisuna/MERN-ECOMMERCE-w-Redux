@@ -5,7 +5,7 @@ import asyncHandler from 'express-async-handler';
 // @route  GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = 3;
   const page = Number(req.query.pageNumber) || 1;
   const name = req.query.name || '';
   const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
@@ -30,7 +30,7 @@ const getProducts = asyncHandler(async (req, res) => {
       : order === 'toprated'
       ? { rating: -1 }
       : { _id: -1 };
-  const count = await Product.countDocuments({
+  const count = await Product.count({
     ...nameFilter,
     ...categoryFilter,
     ...priceFilter,
@@ -43,9 +43,8 @@ const getProducts = asyncHandler(async (req, res) => {
     ...ratingFilter,
   })
     .sort(sortOrder)
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
-
+    .skip(pageSize * (page - 1))
+    .limit(pageSize);
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 // @desc   Fetch all categories

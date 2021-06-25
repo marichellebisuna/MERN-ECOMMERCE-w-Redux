@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
+import { Link, useParams } from 'react-router-dom';
 import {
   listProducts,
   deleteProduct,
