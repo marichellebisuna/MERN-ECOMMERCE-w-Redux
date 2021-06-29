@@ -88,7 +88,7 @@ const CartScreen = ({ match, location, history }) => {
                     />
                   </Col>
                   <Col className='ml-4' md={2}>
-                    @ ${(item.price * item.qty).toFixed(2)}
+                    @ ${item.price * item.qty}
                   </Col>
                   <Col className='trash'>
                     <Button
@@ -114,9 +114,10 @@ const CartScreen = ({ match, location, history }) => {
                 {shoppingCart.reduce((acc, item) => acc + item.qty, 0)}) items
               </h3>
               $
-              {shoppingCart
-                .reduce((acc, item) => acc + item.qty * item.price, 0)
-                .toFixed(2)}
+              {shoppingCart.reduce(
+                (acc, item) => acc + item.qty * item.price,
+                0
+              )}
             </ListGroup.Item>
             <ListGroup.Item>
               <Button

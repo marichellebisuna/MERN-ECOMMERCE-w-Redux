@@ -15,21 +15,13 @@ const PlaceOrderScreen = ({ history }) => {
     history.push('/payment');
   }
 
-  //Calculate prices
-  const addDecimals = (num) => {
-    return (Math.round(num * 100) / 100).toFixed(2);
-  };
-  cart.itemsPrice = addDecimals(
-    cart.shoppingCart.reduce((acc, item) => acc + item.price * item.qty, 0)
+  const toPrice = (num) => Number(num.toFixed(2)); // 5.123 => "5.12" => 5.12
+  cart.itemsPrice = toPrice(
+    cart.shoppingCart.reduce((a, c) => a + c.qty * c.price, 0)
   );
-  cart.shippingPrice = addDecimals(cart.itemsPrice > 100 ? 100 : 0);
-
-  cart.taxPrice = addDecimals(Number((0.15 * cart.itemsPrice).toFixed(2)));
-  cart.totalPrice = (
-    Number(cart.itemsPrice) +
-    Number(cart.shippingPrice) +
-    Number(cart.taxPrice)
-  ).toFixed(2);
+  cart.shippingPrice = cart.itemsPrice > 100 ? 100 : toPrice(10);
+  cart.taxPrice = toPrice(0.15 * cart.itemsPrice);
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 
   const orderCreate = useSelector((state) => state.orderCreate);
   const { loading, order, success, error } = orderCreate;
@@ -103,7 +95,7 @@ const PlaceOrderScreen = ({ history }) => {
                           </Col>
                           <Col md={4}>
                             {item.qty} x ${item.price} = $
-                            {(item.qty * item.price).toFixed(2)}
+                            {item.qty * item.price}
                           </Col>
                         </Row>
                       </ListGroup.Item>
@@ -123,25 +115,25 @@ const PlaceOrderScreen = ({ history }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${cart.itemsPrice}</Col>
+                  <Col>${cart.itemsPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${cart.shippingPrice}</Col>
+                  <Col>${cart.shippingPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>${cart.taxPrice}</Col>
+                  <Col>${cart.taxPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${cart.totalPrice}</Col>
+                  <Col>${cart.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

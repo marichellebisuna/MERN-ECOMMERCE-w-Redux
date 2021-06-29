@@ -40,17 +40,14 @@ const OrderScreen = ({ match, history }) => {
   const { userInfo } = userLogin;
 
   if (!loading) {
-    //Calculate prices
-    const addDecimals = (num) => {
-      return (Math.round(num * 100) / 100).toFixed(2);
-    };
-    order.itemsPrice = addDecimals(
-      order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+    const toPrice = (num) => Number(num.toFixed(2)); // 5.123 => "5.12" => 5.12
+    order.itemsPrice = toPrice(
+      order.orderItems.reduce((a, c) => a + c.qty * c.price, 0)
     );
-    order.taxPrice = addDecimals(Number((0.15 * order.itemsPrice).toFixed(2)));
-    order.shippingPrice = addDecimals(order.itemsPrice > 100 ? 100 : 0);
+    order.shippingPrice = order.itemsPrice > 100 ? 100 : toPrice(10);
+    order.taxPrice = toPrice(0.15 * order.itemsPrice);
+    order.totalPrice = order.itemsPrice + order.shippingPrice + order.taxPrice;
   }
-
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
@@ -168,7 +165,7 @@ const OrderScreen = ({ match, history }) => {
                           </Col>
                           <Col md={4}>
                             {item.qty} x ${item.price} = $
-                            {(item.qty * item.price).toFixed(2)}
+                            {item.qty * item.price}
                           </Col>
                         </Row>
                       </ListGroup.Item>
@@ -188,25 +185,25 @@ const OrderScreen = ({ match, history }) => {
               <ListGroup.Item>
                 <Row>
                   <Col>Items</Col>
-                  <Col>${order.itemsPrice}</Col>
+                  <Col>${order.itemsPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping</Col>
-                  <Col>${order.shippingPrice}</Col>
+                  <Col>${order.shippingPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax</Col>
-                  <Col>${order.taxPrice}</Col>
+                  <Col>${order.taxPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Total</Col>
-                  <Col>${order.totalPrice}</Col>
+                  <Col>${order.totalPrice.toFixed(2)}</Col>
                 </Row>
               </ListGroup.Item>
               {!order.isPaid && (
