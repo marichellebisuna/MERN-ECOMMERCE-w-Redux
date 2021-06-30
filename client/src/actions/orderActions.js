@@ -17,6 +17,9 @@ import {
   ORDER_DELIVER_REQUEST,
   ORDER_DELIVER_SUCCESS,
   ORDER_DELIVER_FAIL,
+  ORDER_SUMMARY_REQUEST,
+  ORDER_SUMMARY_SUCCES,
+  ORDER_SUMMARY_FAIL,
 } from '../constants/orderConstants';
 import axios from 'axios';
 import { logout } from './userActions';
@@ -224,6 +227,36 @@ export const listOrders = () => async (dispatch, getState) => {
     }
     dispatch({
       type: ORDER_LIST_FAIL,
+      payload: message,
+    });
+  }
+};
+
+export const summaryOrder = () => async (dispatch, getState) => {
+  dispatch({ type: ORDER_SUMMARY_REQUEST });
+  const {
+    userLogin: { userInfo },
+  } = getState();
+
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/orders/summary`, config);
+
+    dispatch({ type: ORDER_SUMMARY_SUCCES, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    if (message === 'Not authorized, token failed') {
+      dispatch(logout());
+    }
+    dispatch({
+      type: ORDER_SUMMARY_FAIL,
       payload: message,
     });
   }

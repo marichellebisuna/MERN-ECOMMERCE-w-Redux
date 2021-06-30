@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { Container } from 'react-bootstrap';
 import HomeScreen from './screens/HomeScreen';
+import DashboardScreen from './screens/DashboardScreen';
 import SearchScreen from './screens/SearchScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
@@ -58,6 +59,7 @@ function App() {
             component={ProductListScreen}
             exact
           />
+          <Route path='/admin/dashboard' component={DashboardScreen} />
           <Route path='/profile' component={ProfileScreen} />
           <Route path='/map' component={MapScreen} />
           <Route path='/product/:id' component={ProductScreen} />
