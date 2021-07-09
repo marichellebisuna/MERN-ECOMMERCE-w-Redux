@@ -161,6 +161,7 @@ const dashboard = asyncHandler(async (req, res) => {
         sales: { $sum: '$totalPrice' },
       },
     },
+    { $sort: { _id: -1 } },
   ]);
   const productCategories = await Product.aggregate([
     {
@@ -172,6 +173,7 @@ const dashboard = asyncHandler(async (req, res) => {
   ]);
   res.send({ users, orders, dailyOrders, productCategories });
 });
+
 export {
   addOrderItems,
   getOrderById,

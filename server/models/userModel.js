@@ -5,29 +5,29 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'Please enter your name.'],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Please enter your email.'],
       unique: true,
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Please enter your password.'],
     },
     isAdmin: {
       type: Boolean,
-      required: true,
       default: false,
+    },
+    avatar: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/myshops/image/upload/v1625542294/store/avatar_eyjxyu.png',
     },
   },
   { timestamps: true }
 );
-
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

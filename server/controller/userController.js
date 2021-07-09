@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler';
-import { generateToken } from '../utils.js';
+import { createActivationToken, validateEmail } from '../utils.js';
 import User from '../models/userModel.js';
+import bcrypt from 'bcryptjs';
+import sendMail from '../sendMail.js';
 
 // @desc   Auth user & get token
 // @route  POST api/users/login
@@ -10,7 +12,7 @@ const authUser = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (user && (await bcrypt.compareSync(password, user.password))) {
     res.json({
       _id: user._id,
       name: user.name,
@@ -27,34 +29,115 @@ const authUser = asyncHandler(async (req, res) => {
 // @desc   Register a new user
 // @route  POST api/users
 // @access Public
+
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-  const userExists = await User.findOne({ email });
+    if (!name || !email || !password) {
+      res.status(400);
+      throw new Error('Please complete the registration.');
+    }
 
-  if (userExists) {
-    res.status(400);
-    throw new Error('User already exists');
+    if (!validateEmail(email)) {
+      res.status(400);
+      throw new Error('Invalid email.');
+    }
+
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      res.status(400);
+      throw new Error('User already exists');
+    }
+
+    if (password.length < 6) {
+      res.status(400);
+      throw new Error('Password must be atleast 6 characters.');
+    }
+
+    const hashPassword = await bcrypt.hash(password, 12);
+
+    const newUser = {
+      name,
+      email,
+      password: hashPassword,
+    };
+
+    const activation_token = createActivationToken(newUser);
+
+    console.log(activation_token);
+    const url = `${process.env.CLIENT_URL}/user/activate/${activation_token}`;
+    sendMail(email, url, 'Verify your email address.');
+    res.json({ msg: 'Register success! Please activate your email to start.' });
+  } catch (err) {
+    return res.status(500).json({ msg: err.message });
   }
+});
 
-  const user = await User.create({
-    name,
-    email,
-    password,
-  });
+// @desc   Activate email
+// @route  POST api/activation
+// @access Public
+const activateEmail = asyncHandler(async (req, res) => {
+  // const { activation_token } = req.body;
+  // const user = jwt.verify(
+  //   activation_token,
+  //   process.env.ACTIVATION_TOKEN_SECRET
+  // );
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      token: generateToken(user._id),
-    });
-  } else {
-    res.status(400);
-    throw new Error('Invalid user data.');
-  }
+  // const { name, email, password } = user;
+
+  // const check = await User.findOne({ email });
+
+  // if (!check) {
+  //   const newUser = new User({
+  //     _id: user._id,
+  //     name,
+  //     email,
+  //     password,
+  //     // isAdmin: user.isAdmin,
+  //     //token: createActivationToken(newUser),
+  //   });
+  //   await newUser.save();
+  //   res.status(201).json({
+  //     msg: 'Account has been activated!',
+  //     // _id: user._id,
+  //     name,
+  //     email,
+  //     // isAdmin: user.isAdmin,
+  //     password,
+  //     // token: createActivationToken(newUser),
+  //   });
+  // } else {
+  //   res.status(400);
+  //   throw new Error('"This email already exists."');
+  // }
+  // // try {
+  // const { activation_token } = req.body;
+  // const user = jwt.verify(
+  //   activation_token,
+  //   process.env.ACTIVATION_TOKEN_SECRET
+  // );
+
+  //const { name, email, password } = user;
+  //console.log(activation_token);
+  // const check = await Users.findOne({ email });
+  // if (check)
+  //   return res.status(400).json({ msg: 'This email already exists.' });
+
+  // const newUser = new Users({
+  //   name,
+  //   email,
+  //   password,
+  // });
+
+  // await newUser.save();
+
+  //res.json({ msg: 'Account has been activated!' });
+  res.json({ msg: activation_token });
+  // } catch (err) {
+  //   return res.status(500).json({ msg: err.message });
+  // }
 });
 
 // @desc   GET user profile
@@ -168,4 +251,5 @@ export {
   deleteUser,
   getUserById,
   updateUser,
+  activateEmail,
 };

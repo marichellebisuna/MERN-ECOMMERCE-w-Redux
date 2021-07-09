@@ -12,13 +12,14 @@ h2 {
   font-size: 1.4rem;
   padding: 0.5rem 0;
 }
+
 a.active,
 a:hover {
   color: #4bbf73 !important;
   /* padding-left: 10px; */
   text-decoration: none !important;
   transition: all 0.2s;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 aside {
@@ -199,4 +200,27 @@ button.close-sidebar:hover {
 }
 .summary-title.color3 {
   background-color: #e0e0f0;
+}
+
+.no-pointer {
+  pointer-events: none;
+}
+
+.division-left {
+  border-right: 0.1rem #c0c0c0 solid;
+
+  width: 100%;
+  /* padding-left: 15px; */
+  /* padding-right: 15px; */
+}
+.division-right {
+  border-left: 0.1rem #c0c0c0 solid;
+  /* padding-left: 15px; */
+  width: 100%;
+  /* padding-right: 15px; */
+}
+
+.boldtext {
+  font-weight: 700;
+  text-transform: capitalize;
 }

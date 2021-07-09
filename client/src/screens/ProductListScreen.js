@@ -23,7 +23,7 @@ const ProductListScreen = ({ history, match }) => {
   const productDelete = useSelector((state) => state.productDelete);
   const {
     loading: loadingDelete,
-    error: errorDelete,
+    // error: errorDelete,
     success: successDelete,
   } = productDelete;
 
@@ -45,15 +45,14 @@ const ProductListScreen = ({ history, match }) => {
     }
     if (successCreate) {
       history.push(`/admin/product/${createdProduct._id}/edit`);
-    } else {
-      dispatch(listProducts('', pageNumber));
     }
+    dispatch(listProducts('', pageNumber));
   }, [
     dispatch,
     history,
     userInfo,
-    successDelete,
     successCreate,
+    successDelete,
     createdProduct,
     pageNumber,
   ]);
@@ -63,7 +62,7 @@ const ProductListScreen = ({ history, match }) => {
       dispatch(deleteProduct(id));
     }
   };
-  const createProductHandler = () => {
+  const createProductHandler = (product) => {
     dispatch(createProduct());
   };
   return (
@@ -72,15 +71,13 @@ const ProductListScreen = ({ history, match }) => {
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col>
+        <Col className='text-right'>
           <Button className='my-3' onClick={createProductHandler}>
             <i className='fas fa-plus'></i> Create Product
           </Button>
         </Col>
       </Row>
       {loadingDelete && <Loader />}
-      {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
-
       {loadingCreate && <Loader />}
       {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
       {loading ? (

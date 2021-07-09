@@ -87,7 +87,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @access Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample name',
+    name: 'Sample name' + Date.now(),
     price: 0,
     user: req.user._id,
     image: '/images/sample.jpg',
@@ -174,6 +174,20 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
+//a new way of advance search filters
+//component/SearchBox.js [const name]
+
+const handleQuery = async (req, res, query) => {
+  const products = await Product.find({});
+};
+const searchFilters = asyncHandler(async (req, res) => {
+  const { name } = req.body;
+  if (query) {
+    console.log('query', query);
+    await handleQuery(req, res, query);
+  }
+});
+
 export {
   getProducts,
   getProductById,
@@ -183,4 +197,5 @@ export {
   updateProduct,
   createProductReview,
   getTopProducts,
+  searchFilters,
 };

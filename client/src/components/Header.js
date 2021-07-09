@@ -7,8 +7,8 @@ import { logout } from '../actions/userActions';
 import SearchBox from './SearchBox';
 import { Link, useParams } from 'react-router-dom';
 import { listProducts } from '../actions/productActions';
-import Message from '../components/Message';
-import Loader from '../components/Loader';
+import Message from './Message';
+import Loader from './Loader';
 
 const Header = () => {
   const { name = 'all', category = 'all' } = useParams();
@@ -79,6 +79,9 @@ const Header = () => {
                     <LinkContainer to='/profile'>
                       <NavDropdown.Item>Profile</NavDropdown.Item>
                     </LinkContainer>
+                    {/* <LinkContainer to='/wishlist'>
+                      <NavDropdown.Item>Wishlist</NavDropdown.Item>
+                    </LinkContainer> */}
                     <NavDropdown.Item onClick={logoutHandler}>
                       Logout
                     </NavDropdown.Item>
@@ -100,6 +103,9 @@ const Header = () => {
                     </LinkContainer>
                     <LinkContainer to='/admin/orderlist'>
                       <NavDropdown.Item>Orders</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/admin/dashboard'>
+                      <NavDropdown.Item>Dashboard</NavDropdown.Item>
                     </LinkContainer>
                   </NavDropdown>
                 )}

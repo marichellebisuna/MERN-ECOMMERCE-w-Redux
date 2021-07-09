@@ -33,6 +33,7 @@ const productSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      text: true,
     },
     image: {
       type: String,
@@ -41,14 +42,17 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: String,
       required: true,
+      text: true,
     },
     category: {
       type: String,
       required: true,
+      text: true,
     },
     description: {
       type: String,
       required: true,
+      text: true,
     },
     reviews: [reviewSchema],
     rating: {

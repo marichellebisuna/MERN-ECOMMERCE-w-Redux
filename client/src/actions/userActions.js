@@ -23,6 +23,9 @@ import {
   USER_UPDATE_FAIL,
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
+  USER_ACTIVATE_REQUEST,
+  USER_ACTIVATE_SUCCESS,
+  USER_ACTIVATE_FAIL,
 } from '../constants/userConstants';
 import axios from 'axios';
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants';
@@ -83,13 +86,51 @@ export const register = (name, email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      '/api/users',
+      '/api/users/register',
       { name, email, password },
       config
     );
 
     dispatch({
       type: USER_REGISTER_SUCCESS,
+      payload: data,
+    });
+
+    // dispatch({
+    //   type: USER_LOGIN_SUCCESS,
+    //   payload: data,
+    // });
+
+    localStorage.setItem('userInfo', JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const activate = (activation_token) => async (dispatch) => {
+  try {
+    dispatch({ type: USER_ACTIVATE_REQUEST });
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const { data } = await axios.post(
+      '/api/users/activate',
+      { activation_token },
+      config
+    );
+
+    dispatch({
+      type: USER_ACTIVATE_SUCCESS,
       payload: data,
     });
 
@@ -101,7 +142,7 @@ export const register = (name, email, password) => async (dispatch) => {
     localStorage.setItem('userInfo', JSON.stringify(data));
   } catch (error) {
     dispatch({
-      type: USER_REGISTER_FAIL,
+      type: USER_ACTIVATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

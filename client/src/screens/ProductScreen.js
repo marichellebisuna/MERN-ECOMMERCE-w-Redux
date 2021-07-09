@@ -80,18 +80,24 @@ const ProductScreen = ({ history, match }) => {
             <Col md={3}>
               <ListGroup variant='flush'>
                 {/* to remove the borderline */}
-                <ListGroup.Item>
-                  <h3>{product.name}</h3>
-                </ListGroup.Item>
+                <ListGroup.Item as='h3'>{product.name}</ListGroup.Item>
                 <ListGroup.Item>
                   <Rating
                     rating={product.rating}
                     text={`${product.numReviews} reviews`}
                   />
                 </ListGroup.Item>
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                <ListGroup.Item as='h5'>Price: ${product.price}</ListGroup.Item>
                 <ListGroup.Item>
-                  Description: {product.description}
+                  <h5>Description:</h5> {product.description}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Link to={`/product/${product._id}`}>
+                    <span className='pr-1'>
+                      <i class='far fa-heart'></i>
+                    </span>{' '}
+                  </Link>
+                  Add to Wishlist
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -154,9 +160,14 @@ const ProductScreen = ({ history, match }) => {
               <ListGroup variant='flush'>
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
-                    <Rating rating={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <div className='d-flex justify-content-between'>
+                      <h5>
+                        <strong>{review.name}</strong>
+                      </h5>{' '}
+                      <Rating rating={review.rating} />
+                    </div>
+
+                    <p>Date reviewed: {review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}

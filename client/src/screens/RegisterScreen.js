@@ -27,6 +27,9 @@ const RegisterScreen = ({ location, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    if (password < 6) {
+      setMessage('Password must consist of 6 characters.');
+    }
     if (password !== confirmPassword) {
       setMessage('Passwords do not match.');
     } else {

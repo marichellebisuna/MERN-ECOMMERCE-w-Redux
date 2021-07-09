@@ -9,6 +9,7 @@ import {
   createProduct,
   createProductReview,
   getTopProducts,
+  searchFilters,
 } from '../controller/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 
@@ -21,5 +22,8 @@ router
   .get(getProductById)
   .delete(protect, admin, deleteProduct)
   .put(protect, admin, updateProduct);
+
+// another way for advance search filter
+router.post('/search/filters', searchFilters);
 
 export default router;
