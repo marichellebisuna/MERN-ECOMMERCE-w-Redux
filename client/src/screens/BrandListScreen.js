@@ -5,69 +5,58 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 
-import {
-  listCategories,
-  deleteCategory,
-  createCategory,
-} from '../actions/categoryActions';
+import { listBrands, deleteBrand, createBrand } from '../actions/brandActions';
 
-import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
+import { BRAND_CREATE_RESET } from '../constants/brandConstants';
 
-const CategoryListScreen = ({ history, match }) => {
+const BrandListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
-  const categoryList = useSelector((state) => state.categoryList);
-  const { loading, error, categories } = categoryList;
+  const brandList = useSelector((state) => state.brandList);
+  const { loading, error, brands } = brandList;
 
-  const categoryDelete = useSelector((state) => state.categoryDelete);
-  const { loading: loadingDelete, success: successDelete } = categoryDelete;
+  const brandDelete = useSelector((state) => state.brandDelete);
+  const { loading: loadingDelete, success: successDelete } = brandDelete;
 
-  const categoryCreate = useSelector((state) => state.categoryCreate);
+  const brandCreate = useSelector((state) => state.brandCreate);
   const {
     loading: loadingCreate,
     error: errorCreate,
     success: successCreate,
-    category: createdCategory,
-  } = categoryCreate;
+    brand: createdBrand,
+  } = brandCreate;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   useEffect(() => {
-    dispatch({ type: CATEGORY_CREATE_RESET });
+    dispatch({ type: BRAND_CREATE_RESET });
     if (!userInfo.isAdmin) {
       history.push('/login');
     }
     if (successCreate) {
-      history.push(`/admin/category/${createdCategory._id}/edit`);
+      history.push(`/admin/brand/${createdBrand._id}/edit`);
     }
-    dispatch(listCategories());
-  }, [
-    dispatch,
-    history,
-    userInfo,
-    successCreate,
-    successDelete,
-    createdCategory,
-  ]);
+    dispatch(listBrands());
+  }, [dispatch, history, userInfo, successCreate, successDelete, createdBrand]);
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteCategory(id));
+      dispatch(deleteBrand(id));
     }
   };
-  const createCategoryHandler = (category) => {
-    dispatch(createCategory());
+  const createBrandHandler = (brand) => {
+    dispatch(createBrand());
   };
   return (
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Categories</h1>
+          <h1>brands</h1>
         </Col>
         <Col className='text-right'>
-          <Button className='my-3' onClick={createCategoryHandler}>
-            <i className='fas fa-plus'></i> Create Category
+          <Button className='my-3' onClick={createBrandHandler}>
+            <i className='fas fa-plus'></i> Create Brand
           </Button>
         </Col>
       </Row>
@@ -78,8 +67,8 @@ const CategoryListScreen = ({ history, match }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : categories.length === 0 ? (
-        <Message>There is no categories to show. Please create some.</Message>
+      ) : brands.length === 0 ? (
+        <Message>There is no brands to show. Please create some.</Message>
       ) : (
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
@@ -91,14 +80,14 @@ const CategoryListScreen = ({ history, match }) => {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => {
+            {brands.map((brand) => {
               return (
-                <tr key={category._id}>
-                  <td>{category._id}</td>
-                  <td>{category.name}</td>
-                  <td>{category.slug}</td>
+                <tr key={brand._id}>
+                  <td>{brand._id}</td>
+                  <td>{brand.name}</td>
+                  <td>{brand.slug}</td>
                   <td>
-                    <LinkContainer to={`/admin/category/${category._id}/edit`}>
+                    <LinkContainer to={`/admin/brand/${brand._id}/edit`}>
                       <Button variant='light' className='btn-sm'>
                         <i className='fas fa-edit'></i>
                       </Button>
@@ -106,7 +95,7 @@ const CategoryListScreen = ({ history, match }) => {
                     <Button
                       variant='danger'
                       className='btn-sm'
-                      onClick={() => deleteHandler(category._id)}
+                      onClick={() => deleteHandler(brand._id)}
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
@@ -121,4 +110,4 @@ const CategoryListScreen = ({ history, match }) => {
   );
 };
 
-export default CategoryListScreen;
+export default BrandListScreen;

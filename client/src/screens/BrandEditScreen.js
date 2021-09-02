@@ -5,50 +5,47 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import {
-  listCategoryDetails,
-  updateCategory,
-} from '../actions/categoryActions';
-import { CATEGORY_UPDATE_RESET } from '../constants/categoryConstants';
+import { listBrandDetails, updateBrand } from '../actions/brandActions';
+import { BRAND_UPDATE_RESET } from '../constants/brandConstants';
 import slugify from 'slugify';
 import { toast } from 'react-toastify';
 
-const CategoryEditScreen = ({ match, history }) => {
-  const categoryId = match.params.id;
+const BrandEditScreen = ({ match, history }) => {
+  const brandId = match.params.id;
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
 
   const dispatch = useDispatch();
 
-  const categoryDetails = useSelector((state) => state.categoryDetails);
-  const { loading, error, category } = categoryDetails;
+  const brandDetails = useSelector((state) => state.brandDetails);
+  const { loading, error, brand } = brandDetails;
 
-  const categoryUpdate = useSelector((state) => state.categoryUpdate);
+  const brandUpdate = useSelector((state) => state.brandUpdate);
   const {
     loading: loadingUpdate,
     error: errorUpdate,
     success: successUpdate,
-  } = categoryUpdate;
+  } = brandUpdate;
 
   useEffect(() => {
     if (successUpdate) {
-      dispatch({ type: CATEGORY_UPDATE_RESET });
-      history.push('/admin/categories');
+      dispatch({ type: BRAND_UPDATE_RESET });
+      history.push('/admin/brands');
     } else {
-      if (!category || category._id !== categoryId) {
-        dispatch(listCategoryDetails(categoryId));
+      if (!brand || brand._id !== brandId) {
+        dispatch(listBrandDetails(brandId));
       } else {
-        setName(category.name);
-        setSlug(slugify(category.name).toLowerCase());
+        setName(brand.name);
+        setSlug(slugify(brand.name).toLowerCase());
       }
     }
-  }, [dispatch, history, categoryId, category, successUpdate]);
+  }, [dispatch, history, brandId, brand, successUpdate]);
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
-      updateCategory({
-        _id: categoryId,
+      updateBrand({
+        _id: brandId,
         name,
         slug: slugify(name),
       })
@@ -61,11 +58,11 @@ const CategoryEditScreen = ({ match, history }) => {
 
   return (
     <>
-      <Link to='/admin/categories' className='btn btn-light my-3'>
+      <Link to='/admin/brands' className='btn btn-light my-3'>
         Go Back
       </Link>
       <FormContainer>
-        <h1>Edit Category</h1>
+        <h1>Edit Brand</h1>
         {/* {loadingUpdate && <Loader />} */}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
@@ -96,4 +93,4 @@ const CategoryEditScreen = ({ match, history }) => {
   );
 };
 
-export default CategoryEditScreen;
+export default BrandEditScreen;

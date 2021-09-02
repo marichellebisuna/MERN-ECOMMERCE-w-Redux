@@ -11,7 +11,7 @@ import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
-
+import brandRoutes from './routes/brandRoutes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -32,6 +32,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/brands', brandRoutes);
 
 app.use(express.static('public'));
 app.get('/api/config/paypal', (req, res) =>

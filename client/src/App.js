@@ -6,9 +6,10 @@ import HomeScreen from './screens/HomeScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import SearchScreen from './screens/SearchScreen';
 import ProductScreen from './screens/ProductScreen';
-import CategoryScreen from './screens/CategoryScreen';
 import CategoryListScreen from './screens/CategoryListScreen';
 import CategoryEditScreen from './screens/CategoryEditScreen';
+import BrandListScreen from './screens/BrandListScreen';
+import BrandEditScreen from './screens/BrandEditScreen';
 import CartScreen from './screens/CartScreen';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import LoginScreen from './screens/LoginScreen';
@@ -63,16 +64,7 @@ function App() {
             exact
           />
           <Route path='/product/:id' component={ProductScreen} />
-          <Route
-            path='/admin/categorylist/pageNumber/:pageNumber'
-            component={CategoryListScreen}
-            exact
-          />
-          <Route
-            path='/admin/categorylist'
-            component={CategoryListScreen}
-            exact
-          />
+
           <Route
             path='/admin/categories'
             component={CategoryListScreen}
@@ -83,7 +75,13 @@ function App() {
             component={CategoryEditScreen}
             exact
           />
-          <Route path='/category/:slug' component={CategoryScreen} />
+
+          <Route path='/admin/brands' component={BrandListScreen} exact />
+          <Route
+            path='/admin/brand/:id/edit'
+            component={BrandEditScreen}
+            exact
+          />
           <Route path='/admin/dashboard' component={DashboardScreen} />
           <Route path='/profile' component={ProfileScreen} />
           <Route path='/map' component={MapScreen} />

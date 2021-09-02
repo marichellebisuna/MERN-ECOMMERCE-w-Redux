@@ -48,7 +48,7 @@ export const categoryListReducer = (
 };
 
 export const categoryDetailsReducer = (
-  state = { product: {}, loading: true },
+  state = { category: {}, loading: true },
   action
 ) => {
   switch (action.type) {
