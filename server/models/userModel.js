@@ -20,14 +20,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    avatar: {
-      type: String,
+    image: {
+      type: Array,
       default:
-        'https://res.cloudinary.com/myshops/image/upload/v1625542294/store/avatar_eyjxyu.png',
+        'https://res.cloudinary.com/myshops/image/upload/v1627277588/store/avatar-icon_f3hdnk.png',
     },
   },
   { timestamps: true }
 );
+
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

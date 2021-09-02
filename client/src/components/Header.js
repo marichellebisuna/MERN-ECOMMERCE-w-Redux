@@ -15,6 +15,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
   const cart = useSelector((state) => state.cart);
   const { shoppingCart } = cart;
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
@@ -100,6 +101,18 @@ const Header = () => {
                     </LinkContainer>
                     <LinkContainer to='/admin/productlist'>
                       <NavDropdown.Item>Products</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/admin/categories'>
+                      <NavDropdown.Item>Categories</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/admin/subcategories'>
+                      <NavDropdown.Item>Sub Categories</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/admin/coupon'>
+                      <NavDropdown.Item>Coupon</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to='/user/password'>
+                      <NavDropdown.Item>Password</NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to='/admin/orderlist'>
                       <NavDropdown.Item>Orders</NavDropdown.Item>

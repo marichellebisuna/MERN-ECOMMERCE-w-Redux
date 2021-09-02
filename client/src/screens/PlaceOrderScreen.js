@@ -25,15 +25,6 @@ const PlaceOrderScreen = ({ history }) => {
 
   const orderCreate = useSelector((state) => state.orderCreate);
   const { loading, order, success, error } = orderCreate;
-
-  useEffect(() => {
-    if (success) {
-      history.push(`/order/${order._id}`);
-      dispatch({ type: ORDER_CREATE_RESET });
-    }
-    // eslint-disable-next-line
-  }, [history, dispatch, order, success]);
-
   const placeOrderHandler = () => {
     dispatch(
       createOrder({
@@ -48,6 +39,14 @@ const PlaceOrderScreen = ({ history }) => {
       })
     );
   };
+
+  useEffect(() => {
+    if (success) {
+      history.push(`/order/${order._id}`);
+      dispatch({ type: ORDER_CREATE_RESET });
+    }
+    // eslint-disable-next-line
+  }, [history, dispatch, order, success]);
 
   return (
     <>
@@ -82,7 +81,7 @@ const PlaceOrderScreen = ({ history }) => {
                         <Row>
                           <Col md={1}>
                             <Image
-                              src={item.image}
+                              src={item.images}
                               alt={item.name}
                               fluid
                               rounded

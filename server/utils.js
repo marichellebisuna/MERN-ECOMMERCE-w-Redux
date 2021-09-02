@@ -1,18 +1,24 @@
 import jwt from 'jsonwebtoken';
 import mg from 'mailgun-js';
 
+export const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '30d',
+  });
+};
+
 export const createActivationToken = (payload) => {
   return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
     expiresIn: '35m',
   });
 };
 export const createAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: '15m',
   });
 };
 export const createRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: '7d',
   });
 };

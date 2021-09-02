@@ -5,12 +5,14 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, 'uploads'); //folder
   },
   filename(req, file, cb) {
     cb(
       null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
+      file.originalname
+      // Date.now() + file.originalname
+      // `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
     );
   },
 });
@@ -34,8 +36,8 @@ const upload = multer({
   },
 });
 
-router.post('/', upload.single('image'), (req, res) => {
-  res.send(`/${req.file.path}`);
+router.post('/', upload.single('images'), (req, res) => {
+  res.send(req.file.path);
 });
 
 export default router;

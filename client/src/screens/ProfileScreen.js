@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Form, Row, Col, Button } from 'react-bootstrap';
+import { Table, Form, Row, Col, Button, Image } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
@@ -7,14 +7,18 @@ import Loader from '../components/Loader';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listMyOrders } from '../actions/orderActions';
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
+import axios from 'axios';
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ history }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [image, setImage] = useState('');
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
-
+  const [uploading, setUploading] = useState(false);
+  const [uploadingError, setUploadingError] = useState('');
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state) => state.userDetails);
@@ -22,7 +26,7 @@ const ProfileScreen = ({ location, history }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
+  console.log(userDetails);
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
 
@@ -40,6 +44,7 @@ const ProfileScreen = ({ location, history }) => {
       } else {
         setName(user.name);
         setEmail(user.email);
+        setImage(user.image);
       }
     }
   }, [dispatch, history, userInfo, user, success]);
@@ -49,11 +54,39 @@ const ProfileScreen = ({ location, history }) => {
     if (password !== confirmPassword) {
       setMessage('Passwords do not match.');
     } else {
-      dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      dispatch(
+        updateUserProfile({ id: user._id, name, email, password, image })
+      );
     }
   };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+
+    const formData = new FormData();
+    formData.append('images', file);
+
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      const { data } = await axios.post('/api/upload/avatar', formData, config);
+
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      setUploadingError(error.message);
+      setUploading(false);
+    }
+  };
+
   return (
-    <Row>
+    <Row className='profile_page'>
       <Col md={3}>
         <h2>User Profile</h2>
         {message && <Message variant='danger'>{message}</Message>}
@@ -65,6 +98,31 @@ const ProfileScreen = ({ location, history }) => {
           <Message variant='danger'>{error}</Message>
         ) : (
           <Form onSubmit={submitHandler}>
+            <Form.Group controlId='avatar' className='avatar p-2'>
+              <Image
+                src={image}
+                rounded
+                className='avatar'
+                onChange={(e) => setImage(e.target.value)}
+                thumbnail
+              />
+              <span>
+                <i className='fas fa-camera'></i>
+                <p>Change</p>
+                <input
+                  type='file'
+                  name='images'
+                  id='file_up'
+                  accept='image/*'
+                  onChange={uploadFileHandler}
+                />
+              </span>
+              {uploading && <Loader />}
+              {uploadingError && (
+                <Message variant='danger'>{uploadingError}</Message>
+              )}
+            </Form.Group>
+
             <Form.Group controlId='name'>
               <Form.Label>Name</Form.Label>
               <Form.Control

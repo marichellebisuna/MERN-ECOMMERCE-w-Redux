@@ -4,10 +4,11 @@ import Rating from './Rating';
 import { Link } from 'react-router-dom';
 
 const Product = ({ product }) => {
+  console.log(product);
   return (
     <Card className='my-3  rounded'>
       <Link to={`/product/${product._id}`}>
-        <Card.Img variant='top' src={product.image} />
+        <Card.Img variant='top' src={product.images} />
       </Link>
       <Card.Body>
         <Link to={`/product/${product._id}`}>
@@ -30,7 +31,7 @@ const Product = ({ product }) => {
             <Link to={`/product/${product._id}`}>
               {/* <Button variant='light'> */}
               <div>
-                <i class='fas fa-eye' />
+                <i className='fas fa-eye' />
               </div>
               <div>View Product </div>
               {/* </Button> */}
@@ -39,9 +40,9 @@ const Product = ({ product }) => {
           {product.countInStock === 0 ? (
             <div className='d-flex flex-row text-center justify-content-center  no-pointer division-right text-center pl-lg-3'>
               {/* <Button disabled> */}
-              <Link disabled>
+              <Link to={`/product/${product._id}`} disabled>
                 <div>
-                  <i class='fas fa-shopping-cart' />
+                  <i className='fas fa-shopping-cart' />
                 </div>
                 <div className=''>Out of Stock</div>
               </Link>
@@ -52,7 +53,7 @@ const Product = ({ product }) => {
               <Link to={`/product/${product._id}`}>
                 {/* <Button variant='light'> */}
                 <div>
-                  <i class='fas fa-shopping-cart' />
+                  <i className='fas fa-shopping-cart' />
                 </div>
                 <div className='pl-2'>Add to Cart</div>
                 {/* </Button> */}

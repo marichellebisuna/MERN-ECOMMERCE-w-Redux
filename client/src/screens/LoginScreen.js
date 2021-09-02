@@ -6,10 +6,14 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { login } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
+// import { GoogleLogin } from 'react-google-login';
+// import FacebookLogin from 'react-facebook-login';
+//import axios from 'axios';
 
 const LoginScreen = ({ location, history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  //const [user, setUser] = useState('');
 
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
@@ -26,6 +30,43 @@ const LoginScreen = ({ location, history }) => {
     e.preventDefault();
     dispatch(login(email, password));
   };
+
+  // const responseGoogle = async (response) => {
+  //   try {
+  //     const res = await axios.post('/api/user/google_login', {
+  //       tokenId: response.tokenId,
+  //     });
+
+  //     setUser({ ...user, error: '', success: res.data.msg });
+  //     localStorage.setItem('firstLogin', true);
+
+  //     dispatch(login());
+  //     history.push('/');
+  //   } catch (err) {
+  //     err.response.data.msg &&
+  //       setUser({ ...user, err: err.response.data.msg, success: '' });
+  //   }
+  // };
+
+  // const responseFacebook = async (response) => {
+  //   try {
+  //     const { accessToken, userID } = response;
+  //     const res = await axios.post('/api/user/facebook_login', {
+  //       accessToken,
+  //       userID,
+  //     });
+
+  //     setUser({ ...user, error: '', success: res.data.msg });
+  //     localStorage.setItem('firstLogin', true);
+
+  //     dispatch(login());
+  //     history.push('/');
+  //   } catch (err) {
+  //     err.response.data.msg &&
+  //       setUser({ ...user, err: err.response.data.msg, success: '' });
+  //   }
+  // };
+
   return (
     <FormContainer>
       <h1>Sign In</h1>
@@ -50,10 +91,31 @@ const LoginScreen = ({ location, history }) => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
-        <Button type='submit' variant='primary'>
+        <Button
+          type='submit'
+          variant='primary'
+          disabled={email && password ? false : true}
+        >
           Sign In
         </Button>
       </Form>
+      {/* <Row>
+        <Col className='social'>
+          <GoogleLogin
+            clientId='Your google client id'
+            buttonText='Login with google'
+            onSuccess={responseGoogle}
+            cookiePolicy={'single_host_origin'}
+          />
+
+          <FacebookLogin
+            appId='Your facebook app id'
+            autoLoad={false}
+            fields='name,email,picture'
+            callback={responseFacebook}
+          />
+        </Col>
+      </Row> */}
       <Row className='py-3'>
         <Col>
           {' '}

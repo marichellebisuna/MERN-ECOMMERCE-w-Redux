@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const { ObjectId } = mongoose.Schema;
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -15,7 +16,7 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       required: true,
       ref: 'User',
     },
@@ -26,25 +27,27 @@ const reviewSchema = new mongoose.Schema(
 const productSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       required: true,
       ref: 'User',
     },
     name: {
       type: String,
+      trim: true,
       required: true,
       text: true,
     },
-    image: {
+    slug: {
       type: String,
+      unique: true,
+      lowercase: true,
+      index: true,
+    },
+    images: {
+      type: Array,
       required: true,
     },
     brand: {
-      type: String,
-      required: true,
-      text: true,
-    },
-    category: {
       type: String,
       required: true,
       text: true,
@@ -57,7 +60,6 @@ const productSchema = new mongoose.Schema(
     reviews: [reviewSchema],
     rating: {
       type: Number,
-      required: true,
       default: 0,
     },
     numReviews: {
@@ -68,17 +70,50 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: true,
+      trim: true,
       default: 0,
     },
+    category: {
+      type: ObjectId,
+      ref: 'Category',
+    },
+    subs: [
+      {
+        type: ObjectId,
+        ref: 'Subcategory',
+      },
+    ],
     countInStock: {
       type: Number,
       required: true,
       default: 0,
     },
-    qty: {
+    sold: {
       type: Number,
       required: true,
       default: 0,
+    },
+    shipping: {
+      type: String,
+      enum: ['Yes', 'No'],
+    },
+    color: {
+      type: String,
+      enum: ['White', 'Yellow', 'Blue', 'Green', 'Red'],
+    },
+    brand: {
+      type: String,
+      enum: [
+        'Apple',
+        'Hp',
+        'MSI',
+        'ASUS',
+        'Dell',
+        'Cannon',
+        'Logitech',
+        'Sony',
+        'Amazon',
+      ],
     },
   },
   { timestamps: true }

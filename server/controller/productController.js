@@ -1,5 +1,6 @@
 import Product from '../models/productModel.js';
 import asyncHandler from 'express-async-handler';
+import slugify from 'slugify';
 
 // @desc   Fetch all products
 // @route  GET /api/products
@@ -9,9 +10,9 @@ const getProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const name = req.query.name || '';
   const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
-  const category = req.query.category || '';
+  // const category = req.query.category || '';
   const order = req.query.order || '';
-  const categoryFilter = category ? { category } : {};
+  // const categoryFilter = category ? { category } : {};
   const min =
     req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
   const max =
@@ -30,15 +31,15 @@ const getProducts = asyncHandler(async (req, res) => {
       : order === 'toprated'
       ? { rating: -1 }
       : { _id: -1 };
-  const count = await Product.count({
+  const count = await Product.collection.countDocuments({
     ...nameFilter,
-    ...categoryFilter,
+    // ...categoryFilter,
     ...priceFilter,
     ...ratingFilter,
   });
   const products = await Product.find({
     ...nameFilter,
-    ...categoryFilter,
+    // ...categoryFilter,
     ...priceFilter,
     ...ratingFilter,
   })
@@ -46,13 +47,6 @@ const getProducts = asyncHandler(async (req, res) => {
     .skip(pageSize * (page - 1))
     .limit(pageSize);
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
-});
-// @desc   Fetch all categories
-// @route  GET /api/categories
-// @access Public
-const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Product.find().distinct('category');
-  res.json(categories);
 });
 
 // @desc   Fetch single product
@@ -72,10 +66,8 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route  DELETE /api/products/:id
 // @access Private/Admin
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
-
+  const product = await Product.findByIdAndDelete(req.params.id);
   if (product) {
-    await product.remove();
     res.json({ message: 'Product removed' });
   }
   res.status(404);
@@ -86,13 +78,15 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @route  POST /api/products/:id
 // @access Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
+  const name = req.body;
   const product = new Product({
     name: 'Sample name' + Date.now(),
+    slug: slugify('Sample name' + Date.now()),
     price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
-    brand: 'Sample brand',
-    category: 'Sample category',
+    images: '/images/sample.jpg',
+    // brand: '',
+    // category: '',
     countInStock: 0,
     numReviews: 0,
     description: 'Sample description',
@@ -105,16 +99,16 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route  PUT /api/products/:id
 // @access Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } =
+  const { name, price, description, brand, category, countInStock, images } =
     req.body;
-
+  // const { images } = req.file.originalname;
   const product = await Product.findById(req.params.id);
 
   if (product) {
     product.name = name;
     product.price = price;
     product.description = description;
-    product.image = image;
+    product.images = images;
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
@@ -191,7 +185,6 @@ const searchFilters = asyncHandler(async (req, res) => {
 export {
   getProducts,
   getProductById,
-  getCategories,
   deleteProduct,
   createProduct,
   updateProduct,

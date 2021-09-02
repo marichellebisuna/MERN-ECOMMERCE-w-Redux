@@ -64,6 +64,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     'user',
     'email name'
   );
+
   if (order) {
     order.isPaid = true;
     order.paidAt = Date.now();
@@ -75,6 +76,17 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     };
 
     const updatedOrder = await order.save();
+
+    let bulkOption = order.orderItems.map((item) => {
+      return {
+        updateOne: {
+          filter: { _id: item.product._id },
+          update: { $inc: { countInStock: -item.qty, sold: +item.qty } },
+        },
+      };
+    });
+
+    await Product.bulkWrite(bulkOption, {});
     mailgun()
       .messages()
       .send(

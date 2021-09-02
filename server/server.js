@@ -1,38 +1,39 @@
 import path from 'path';
 import express from 'express';
+import bodyParser from 'body-parser';
 import MongoDb from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import morgan from 'morgan';
 import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
+
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
+
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import fileUpload from 'express-fileupload';
 
 MongoDb();
 
 const app = express();
 
 app.use(morgan('dev'));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
-app.use(
-  fileUpload({
-    useTempFiles: true,
-  })
-);
+
+app.use('/api/upload/avatar', uploadRoutes);
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/upload', uploadRoutes);
+app.use('/api/categories', categoryRoutes);
 
+app.use(express.static('public'));
 app.get('/api/config/paypal', (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb')
 );

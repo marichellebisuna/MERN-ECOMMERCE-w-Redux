@@ -75,7 +75,7 @@ const ProductScreen = ({ history, match }) => {
           <Meta title={product.name} />
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid />
+              <Image src={product.images} alt={product.name} fluid />
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>
@@ -94,7 +94,7 @@ const ProductScreen = ({ history, match }) => {
                 <ListGroup.Item>
                   <Link to={`/product/${product._id}`}>
                     <span className='pr-1'>
-                      <i class='far fa-heart'></i>
+                      <i className='far fa-heart'></i>
                     </span>{' '}
                   </Link>
                   Add to Wishlist
@@ -117,6 +117,18 @@ const ProductScreen = ({ history, match }) => {
                     <Col>
                       {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
                     </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Stock:</Col>
+                    <Col>{product.countInStock}</Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Sold:</Col>
+                    <Col>{product.sold}</Col>
                   </Row>
                 </ListGroup.Item>
                 {product.countInStock > 0 && (
@@ -210,6 +222,7 @@ const ProductScreen = ({ history, match }) => {
                       </Form.Group>
                       <Button
                         //disabled={loadingProductReview}
+                        //onClick={()=>submitHandler()}
                         type='submit'
                         variant='primary'
                       >

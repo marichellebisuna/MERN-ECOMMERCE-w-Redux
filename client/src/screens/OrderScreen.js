@@ -152,7 +152,7 @@ const OrderScreen = ({ match, history }) => {
                         <Row>
                           <Col md={1}>
                             <Image
-                              src={item.image}
+                              src={item.images}
                               alt={item.name}
                               fluid
                               rounded

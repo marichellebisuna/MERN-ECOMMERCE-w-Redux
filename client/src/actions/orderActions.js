@@ -43,6 +43,15 @@ export const createOrder = (order) => async (dispatch, getState) => {
     dispatch({
       type: ORDER_CREATE_SUCCESS,
       payload: data,
+      // payload: {
+      //   product: data._id,
+      //   name: data.name,
+      //   image: data.image,
+      //   price: data.price,
+      //   sold: data.sold + data.qty,
+      //   countInStock: data.countInStock - data.qty,
+      //   qty: data.qty,
+      // },
     });
     dispatch({ type: CART_EMPTY });
     localStorage.removeItem('shoppingCart');
