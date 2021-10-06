@@ -10,9 +10,9 @@ const getProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const name = req.query.name || '';
   const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {};
-  // const category = req.query.category || '';
+
   const order = req.query.order || '';
-  // const categoryFilter = category ? { category } : {};
+
   const min =
     req.query.min && Number(req.query.min) !== 0 ? Number(req.query.min) : 0;
   const max =
@@ -33,13 +33,13 @@ const getProducts = asyncHandler(async (req, res) => {
       : { _id: -1 };
   const count = await Product.collection.countDocuments({
     ...nameFilter,
-    // ...categoryFilter,
+
     ...priceFilter,
     ...ratingFilter,
   });
   const products = await Product.find({
     ...nameFilter,
-    // ...categoryFilter,
+
     ...priceFilter,
     ...ratingFilter,
   })
@@ -85,8 +85,6 @@ const createProduct = asyncHandler(async (req, res) => {
     price: 0,
     user: req.user._id,
     images: '/images/sample.jpg',
-    // brand: '',
-    // category: '',
     countInStock: 0,
     numReviews: 0,
     description: 'Sample description',
@@ -99,9 +97,7 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route  PUT /api/products/:id
 // @access Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, brand, category, countInStock, images } =
-    req.body;
-  // const { images } = req.file.originalname;
+  const { name, price, description, brand, countInStock, images } = req.body;
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -110,7 +106,6 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.description = description;
     product.images = images;
     product.brand = brand;
-    product.category = category;
     product.countInStock = countInStock;
 
     const updatedProduct = await product.save();

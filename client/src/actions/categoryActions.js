@@ -147,6 +147,7 @@ export const updateCategory = (category) => async (dispatch, getState) => {
       type: CATEGORY_UPDATE_SUCCESS,
       payload: data,
     });
+    dispatch({ type: CATEGORY_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     const message =
       error.response && error.response.data.message

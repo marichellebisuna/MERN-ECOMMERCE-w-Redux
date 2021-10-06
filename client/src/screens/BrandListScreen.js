@@ -16,7 +16,7 @@ const BrandListScreen = ({ history, match }) => {
   const { loading, error, brands } = brandList;
 
   const brandDelete = useSelector((state) => state.brandDelete);
-  const { loading: loadingDelete, success: successDelete } = brandDelete;
+  const { success: successDelete } = brandDelete;
 
   const brandCreate = useSelector((state) => state.brandCreate);
   const {
@@ -35,7 +35,7 @@ const BrandListScreen = ({ history, match }) => {
       history.push('/login');
     }
     if (successCreate) {
-      history.push(`/admin/brand/${createdBrand._id}/edit`);
+      history.push(`/admin/brands/${createdBrand._id}/edit`);
     }
     dispatch(listBrands());
   }, [dispatch, history, userInfo, successCreate, successDelete, createdBrand]);
@@ -87,7 +87,7 @@ const BrandListScreen = ({ history, match }) => {
                   <td>{brand.name}</td>
                   <td>{brand.slug}</td>
                   <td>
-                    <LinkContainer to={`/admin/brand/${brand._id}/edit`}>
+                    <LinkContainer to={`/admin/brands/${brand._id}/edit`}>
                       <Button variant='light' className='btn-sm'>
                         <i className='fas fa-edit'></i>
                       </Button>

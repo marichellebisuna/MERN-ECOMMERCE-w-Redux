@@ -47,11 +47,7 @@ const productSchema = new mongoose.Schema(
       type: Array,
       required: true,
     },
-    brand: {
-      type: String,
-      required: true,
-      text: true,
-    },
+
     description: {
       type: String,
       required: true,
@@ -73,16 +69,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: 0,
     },
-    category: {
-      type: ObjectId,
-      ref: 'Category',
-    },
-    subs: [
-      {
-        type: ObjectId,
-        ref: 'Subcategory',
-      },
-    ],
+
     countInStock: {
       type: Number,
       required: true,

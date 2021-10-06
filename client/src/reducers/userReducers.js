@@ -75,6 +75,7 @@ export const userRegisterReducer = (state = {}, action) => {
       return state;
   }
 };
+
 export const userActivateReducer = (state = { token: {} }, action) => {
   switch (action.type) {
     case USER_ACTIVATE_REQUEST:

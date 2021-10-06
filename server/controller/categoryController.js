@@ -53,12 +53,22 @@ const createCategory = asyncHandler(async (req, res) => {
     slug: slugify('Sample category name') + Date.now(),
   });
   const createdCategory = await category.save();
-  if (createdCategory) {
-    res.status(201).json(createdCategory);
+  if (category) {
+    res.status(201).json(category);
   } else {
     res.status(404);
     throw new Error('Category create failed.');
   }
+
+  // const { name } = req.body;
+  // const category = await new Category({ name }).save();
+  // if (category) {
+  //   res.json(category);
+  //   // res.json(await new Category({ name, slug: slugify(name) }).save());
+  // } else {
+  //   // console.log(err);
+  //   res.status(400).send('Create category failed');
+  // }
 });
 
 // @desc   Update a category

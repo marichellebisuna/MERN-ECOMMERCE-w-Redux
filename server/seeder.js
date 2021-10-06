@@ -6,6 +6,9 @@ import products from './data/products.js';
 import User from './models/userModel.js';
 import Product from './models/productModel.js';
 import Order from './models/orderModel.js';
+import Category from './models/categoryModel.js';
+import SubCategory from './models/subCategoryModel.js';
+import Brand from './models/brandModel.js';
 import color from 'colors';
 
 dotenv.config();
@@ -34,6 +37,9 @@ const destroyData = async () => {
     await User.deleteMany();
     await Product.deleteMany();
     await Order.deleteMany();
+    await Brand.deleteMany();
+    await Category.deleteMany();
+    await SubCategory.deleteMany();
     console.log('Data destroyed'.green.inverse);
     process.exit();
   } catch (error) {

@@ -40,6 +40,13 @@ import {
   categoryUpdateReducer,
 } from './reducers/categoryReducers';
 import {
+  subCategoryCreateReducer,
+  subCategoryDeleteReducer,
+  subCategoryDetailsReducer,
+  subCategoryListReducer,
+  subCategoryUpdateReducer,
+} from './reducers/subCategoryReducers';
+import {
   brandCreateReducer,
   brandDeleteReducer,
   brandDetailsReducer,
@@ -61,6 +68,11 @@ const reducer = combineReducers({
   categoryDelete: categoryDeleteReducer,
   categoryCreate: categoryCreateReducer,
   categoryUpdate: categoryUpdateReducer,
+  subCategoryList: subCategoryListReducer,
+  subCategoryDetails: subCategoryDetailsReducer,
+  subCategoryDelete: subCategoryDeleteReducer,
+  subCategoryCreate: subCategoryCreateReducer,
+  subCategoryUpdate: subCategoryUpdateReducer,
   brandList: brandListReducer,
   brandDetails: brandDetailsReducer,
   brandDelete: brandDeleteReducer,

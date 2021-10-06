@@ -25,11 +25,7 @@ const CategoryEditScreen = ({ match, history }) => {
   const { loading, error, category } = categoryDetails;
 
   const categoryUpdate = useSelector((state) => state.categoryUpdate);
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = categoryUpdate;
+  const { error: errorUpdate, success: successUpdate } = categoryUpdate;
 
   useEffect(() => {
     if (successUpdate) {
@@ -65,7 +61,7 @@ const CategoryEditScreen = ({ match, history }) => {
         Go Back
       </Link>
       <FormContainer>
-        <h1>Edit Category</h1>
+        <h1>Create/Edit Category</h1>
         {/* {loadingUpdate && <Loader />} */}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? (
@@ -87,7 +83,7 @@ const CategoryEditScreen = ({ match, history }) => {
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Update
+              Save
             </Button>
           </Form>
         )}

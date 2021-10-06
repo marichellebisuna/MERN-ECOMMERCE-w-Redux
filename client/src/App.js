@@ -8,6 +8,8 @@ import SearchScreen from './screens/SearchScreen';
 import ProductScreen from './screens/ProductScreen';
 import CategoryListScreen from './screens/CategoryListScreen';
 import CategoryEditScreen from './screens/CategoryEditScreen';
+import SubCategoryListScreen from './screens/SubCategoryListScreen';
+import SubCategoryEditScreen from './screens/SubCategoryEditScreen';
 import BrandListScreen from './screens/BrandListScreen';
 import BrandEditScreen from './screens/BrandEditScreen';
 import CartScreen from './screens/CartScreen';
@@ -27,7 +29,8 @@ import OrderListScreen from './screens/OrderListScreen';
 import { listProductCategories } from './actions/productActions';
 import { useDispatch } from 'react-redux';
 import MapScreen from './screens/MapScreen';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -36,7 +39,7 @@ function App() {
   return (
     <Router>
       <Header />
-
+      <ToastContainer />
       <main className='py-3'>
         <Container>
           <Route path='/order/:id' component={OrderScreen} />
@@ -71,14 +74,25 @@ function App() {
             exact
           />
           <Route
-            path='/admin/category/:id/edit'
+            path='/admin/categories/:id/edit'
             component={CategoryEditScreen}
+            exact
+          />
+
+          <Route
+            path='/admin/subcategories'
+            component={SubCategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/subcategories/:id/edit'
+            component={SubCategoryEditScreen}
             exact
           />
 
           <Route path='/admin/brands' component={BrandListScreen} exact />
           <Route
-            path='/admin/brand/:id/edit'
+            path='/admin/brands/:id/edit'
             component={BrandEditScreen}
             exact
           />

@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
+
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import LocalSearch from '../components/forms/localSearch';
 
 import {
   listCategories,
@@ -15,12 +17,13 @@ import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
 
 const CategoryListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
+  const [keyword, setKeyword] = useState('');
 
   const categoryList = useSelector((state) => state.categoryList);
   const { loading, error, categories } = categoryList;
 
   const categoryDelete = useSelector((state) => state.categoryDelete);
-  const { loading: loadingDelete, success: successDelete } = categoryDelete;
+  const { success: successDelete } = categoryDelete;
 
   const categoryCreate = useSelector((state) => state.categoryCreate);
   const {
@@ -39,7 +42,7 @@ const CategoryListScreen = ({ history, match }) => {
       history.push('/login');
     }
     if (successCreate) {
-      history.push(`/admin/category/${createdCategory._id}/edit`);
+      history.push(`/admin/categories/${createdCategory._id}/edit`);
     }
     dispatch(listCategories());
   }, [
@@ -56,17 +59,21 @@ const CategoryListScreen = ({ history, match }) => {
       dispatch(deleteCategory(id));
     }
   };
-  const createCategoryHandler = (category) => {
+  const createCategoryHandler = () => {
     dispatch(createCategory());
   };
+
+  const searched = (keyword) => (categories) =>
+    categories.name.toLowerCase().includes(keyword);
+
   return (
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Categories</h1>
+          <h1>Create Categories</h1>
         </Col>
         <Col className='text-right'>
-          <Button className='my-3' onClick={createCategoryHandler}>
+          <Button className='my-3 ' onClick={createCategoryHandler}>
             <i className='fas fa-plus'></i> Create Category
           </Button>
         </Col>
@@ -81,41 +88,47 @@ const CategoryListScreen = ({ history, match }) => {
       ) : categories.length === 0 ? (
         <Message>There is no categories to show. Please create some.</Message>
       ) : (
-        <Table striped bordered hover responsive className='table-sm'>
-          <thead>
-            <tr>
-              <th>ID </th>
-              <th>NAME </th>
-              <th>SLUG</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => {
-              return (
-                <tr key={category._id}>
-                  <td>{category._id}</td>
-                  <td>{category.name}</td>
-                  <td>{category.slug}</td>
-                  <td>
-                    <LinkContainer to={`/admin/category/${category._id}/edit`}>
-                      <Button variant='light' className='btn-sm'>
-                        <i className='fas fa-edit'></i>
+        <>
+          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+
+          <Table striped bordered hover responsive className='table-sm mt-4'>
+            <thead>
+              <tr>
+                <th>ID </th>
+                <th>NAME </th>
+                <th>SLUG</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {categories.filter(searched(keyword)).map((category) => {
+                return (
+                  <tr key={category._id}>
+                    <td>{category._id}</td>
+                    <td>{category.name}</td>
+                    <td>{category.slug}</td>
+                    <td>
+                      <LinkContainer
+                        to={`/admin/categories/${category._id}/edit`}
+                      >
+                        <Button variant='light' className='btn-sm'>
+                          <i className='fas fa-edit'></i>
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        variant='danger'
+                        className='btn-sm'
+                        onClick={() => deleteHandler(category._id)}
+                      >
+                        <i className='fas fa-trash'></i>
                       </Button>
-                    </LinkContainer>
-                    <Button
-                      variant='danger'
-                      className='btn-sm'
-                      onClick={() => deleteHandler(category._id)}
-                    >
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </>
       )}
     </>
   );
