@@ -88,7 +88,7 @@ export const deleteBrand = (id) => async (dispatch, getState) => {
   }
 };
 
-export const createBrand = () => async (dispatch, getState) => {
+export const createBrand = (name) => async (dispatch, getState) => {
   try {
     dispatch({ type: BRAND_CREATE_REQUEST });
 
@@ -102,7 +102,7 @@ export const createBrand = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/brands`, {}, config);
+    const { data } = await axios.post(`/api/brands`, { name }, config);
 
     dispatch({
       type: BRAND_CREATE_SUCCESS,

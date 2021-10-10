@@ -7,14 +7,12 @@ import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import { listBrandDetails, updateBrand } from '../actions/brandActions';
 import { BRAND_UPDATE_RESET } from '../constants/brandConstants';
-import slugify from 'slugify';
 import { toast } from 'react-toastify';
 
 const BrandEditScreen = ({ match, history }) => {
   const brandId = match.params.id;
 
   const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
 
   const dispatch = useDispatch();
 
@@ -22,11 +20,7 @@ const BrandEditScreen = ({ match, history }) => {
   const { loading, error, brand } = brandDetails;
 
   const brandUpdate = useSelector((state) => state.brandUpdate);
-  const {
-    loading: loadingUpdate,
-    error: errorUpdate,
-    success: successUpdate,
-  } = brandUpdate;
+  const { error: errorUpdate, success: successUpdate } = brandUpdate;
 
   useEffect(() => {
     if (successUpdate) {
@@ -37,7 +31,6 @@ const BrandEditScreen = ({ match, history }) => {
         dispatch(listBrandDetails(brandId));
       } else {
         setName(brand.name);
-        setSlug(slugify(brand.name).toLowerCase());
       }
     }
   }, [dispatch, history, brandId, brand, successUpdate]);
@@ -47,7 +40,6 @@ const BrandEditScreen = ({ match, history }) => {
       updateBrand({
         _id: brandId,
         name,
-        slug: slugify(name),
       })
     )
       .then(toast.success(`${name} is created.`))

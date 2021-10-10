@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button, Row, Col } from 'react-bootstrap';
+import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
+import LocalSearch from '../components/forms/localSearch';
 import Loader from '../components/Loader';
-
+import { toast } from 'react-toastify';
 import { listBrands, deleteBrand, createBrand } from '../actions/brandActions';
-
 import { BRAND_CREATE_RESET } from '../constants/brandConstants';
 
 const BrandListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
+
+  const [name, setName] = useState('');
+  const [keyword, setKeyword] = useState('');
 
   const brandList = useSelector((state) => state.brandList);
   const { loading, error, brands } = brandList;
@@ -35,7 +38,7 @@ const BrandListScreen = ({ history, match }) => {
       history.push('/login');
     }
     if (successCreate) {
-      history.push(`/admin/brands/${createdBrand._id}/edit`);
+      history.push('/admin/brands');
     }
     dispatch(listBrands());
   }, [dispatch, history, userInfo, successCreate, successDelete, createdBrand]);
@@ -45,19 +48,23 @@ const BrandListScreen = ({ history, match }) => {
       dispatch(deleteBrand(id));
     }
   };
-  const createBrandHandler = (brand) => {
-    dispatch(createBrand());
+  const createBrandHandler = (e) => {
+    e.preventDefault();
+    try {
+      dispatch(createBrand(name));
+      toast.success(`${name} is created.`);
+      setName('');
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
+  const searched = (keyword) => (brands) =>
+    brands.name.toLowerCase().includes(keyword);
   return (
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>brands</h1>
-        </Col>
-        <Col className='text-right'>
-          <Button className='my-3' onClick={createBrandHandler}>
-            <i className='fas fa-plus'></i> Create Brand
-          </Button>
+          <h1>Brands</h1>
         </Col>
       </Row>
 
@@ -67,44 +74,65 @@ const BrandListScreen = ({ history, match }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : brands.length === 0 ? (
-        <Message>There is no brands to show. Please create some.</Message>
       ) : (
-        <Table striped bordered hover responsive className='table-sm'>
-          <thead>
-            <tr>
-              <th>ID </th>
-              <th>NAME </th>
-              <th>SLUG</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {brands.map((brand) => {
-              return (
-                <tr key={brand._id}>
-                  <td>{brand._id}</td>
-                  <td>{brand.name}</td>
-                  <td>{brand.slug}</td>
-                  <td>
-                    <LinkContainer to={`/admin/brands/${brand._id}/edit`}>
-                      <Button variant='light' className='btn-sm'>
-                        <i className='fas fa-edit'></i>
+        <>
+          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+          <Table striped bordered hover responsive className='table-sm'>
+            <thead>
+              <tr>
+                <th>ID </th>
+                <th>NAME </th>
+                <th>SLUG</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {brands.filter(searched(keyword)).map((brand) => {
+                return (
+                  <tr key={brand._id}>
+                    <td>{brand._id}</td>
+                    <td>{brand.name}</td>
+                    <td>{brand.slug}</td>
+                    <td>
+                      <LinkContainer to={`/admin/brands/${brand._id}/edit`}>
+                        <Button variant='light' className='btn-sm'>
+                          <i className='fas fa-edit'></i>
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        variant='danger'
+                        className='btn-sm'
+                        onClick={() => deleteHandler(brand._id)}
+                      >
+                        <i className='fas fa-trash'></i>
                       </Button>
-                    </LinkContainer>
-                    <Button
-                      variant='danger'
-                      className='btn-sm'
-                      onClick={() => deleteHandler(brand._id)}
-                    >
-                      <i className='fas fa-trash'></i>
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+          {brands.length === 0 && (
+            <Message>There are no brands to show. Please create some.</Message>
+          )}
+          <Form onSubmit={createBrandHandler}>
+            <Form.Group controlId='name'>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter name'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+                required
+              ></Form.Control>
+            </Form.Group>
+
+            <Button type='submit' variant='primary'>
+              Add Brand
+            </Button>
+          </Form>
+        </>
       )}
     </>
   );

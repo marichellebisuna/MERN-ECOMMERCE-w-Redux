@@ -12,6 +12,8 @@ import SubCategoryListScreen from './screens/SubCategoryListScreen';
 import SubCategoryEditScreen from './screens/SubCategoryEditScreen';
 import BrandListScreen from './screens/BrandListScreen';
 import BrandEditScreen from './screens/BrandEditScreen';
+import CouponListScreen from './screens/CouponListScreen';
+import CouponEditScreen from './screens/CouponEditScreen';
 import CartScreen from './screens/CartScreen';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import LoginScreen from './screens/LoginScreen';
@@ -94,6 +96,12 @@ function App() {
           <Route
             path='/admin/brands/:id/edit'
             component={BrandEditScreen}
+            exact
+          />
+          <Route path='/admin/coupons' component={CouponListScreen} exact />
+          <Route
+            path='/admin/coupons/:id/edit'
+            component={CouponEditScreen}
             exact
           />
           <Route path='/admin/dashboard' component={DashboardScreen} />

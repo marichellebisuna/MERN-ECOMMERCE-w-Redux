@@ -2,7 +2,6 @@ import axios from 'axios';
 import {
   SUB_CATEGORY_CREATE_FAIL,
   SUB_CATEGORY_CREATE_REQUEST,
-  SUB_CATEGORY_CREATE_RESET,
   SUB_CATEGORY_CREATE_SUCCESS,
   SUB_CATEGORY_DELETE_FAIL,
   SUB_CATEGORY_DELETE_REQUEST,
@@ -90,36 +89,41 @@ export const deleteSubCategory = (id) => async (dispatch, getState) => {
   }
 };
 
-export const createSubCategory = () => async (dispatch, getState) => {
-  try {
-    dispatch({ type: SUB_CATEGORY_CREATE_REQUEST });
+export const createSubCategory =
+  (name, parent) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: SUB_CATEGORY_CREATE_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
 
-    const { data } = await axios.post(`/api/subcategories`, {}, config);
+      const { data } = await axios.post(
+        `/api/subcategories`,
+        { name, parent },
+        config
+      );
 
-    dispatch({
-      type: SUB_CATEGORY_CREATE_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: SUB_CATEGORY_CREATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: SUB_CATEGORY_CREATE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: SUB_CATEGORY_CREATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const updateSubCategory =
   (subCategory) => async (dispatch, getState) => {

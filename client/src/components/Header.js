@@ -111,7 +111,7 @@ const Header = () => {
                     <LinkContainer to='/admin/subcategories'>
                       <NavDropdown.Item>Sub Categories</NavDropdown.Item>
                     </LinkContainer>
-                    <LinkContainer to='/admin/coupon'>
+                    <LinkContainer to='/admin/coupons'>
                       <NavDropdown.Item>Coupon</NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to='/user/password'>

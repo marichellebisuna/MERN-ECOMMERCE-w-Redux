@@ -10,14 +10,12 @@ import {
   updateCategory,
 } from '../actions/categoryActions';
 import { CATEGORY_UPDATE_RESET } from '../constants/categoryConstants';
-import slugify from 'slugify';
 import { toast } from 'react-toastify';
 
 const CategoryEditScreen = ({ match, history }) => {
   const categoryId = match.params.id;
 
   const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
 
   const dispatch = useDispatch();
 
@@ -36,7 +34,6 @@ const CategoryEditScreen = ({ match, history }) => {
         dispatch(listCategoryDetails(categoryId));
       } else {
         setName(category.name);
-        setSlug(slugify(category.name).toLowerCase());
       }
     }
   }, [dispatch, history, categoryId, category, successUpdate]);
@@ -46,7 +43,6 @@ const CategoryEditScreen = ({ match, history }) => {
       updateCategory({
         _id: categoryId,
         name,
-        slug: slugify(name),
       })
     )
       .then(toast.success(`${name} is created.`))
@@ -83,7 +79,7 @@ const CategoryEditScreen = ({ match, history }) => {
             </Form.Group>
 
             <Button type='submit' variant='primary'>
-              Save
+              Update
             </Button>
           </Form>
         )}

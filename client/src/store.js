@@ -53,6 +53,13 @@ import {
   brandListReducer,
   brandUpdateReducer,
 } from './reducers/brandReducers';
+import {
+  couponCreateReducer,
+  couponDeleteReducer,
+  couponDetailsReducer,
+  couponListReducer,
+  couponUpdateReducer,
+} from './reducers/couponReducers';
 
 const reducer = combineReducers({
   productList: productListReducer,
@@ -78,6 +85,11 @@ const reducer = combineReducers({
   brandDelete: brandDeleteReducer,
   brandCreate: brandCreateReducer,
   brandUpdate: brandUpdateReducer,
+  couponList: couponListReducer,
+  couponDetails: couponDetailsReducer,
+  couponDelete: couponDeleteReducer,
+  couponCreate: couponCreateReducer,
+  couponUpdate: couponUpdateReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,

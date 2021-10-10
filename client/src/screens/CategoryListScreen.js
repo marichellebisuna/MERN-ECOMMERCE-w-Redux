@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Table, Button, Row, Col } from 'react-bootstrap';
-
+import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
-import Loader from '../components/Loader';
 import LocalSearch from '../components/forms/localSearch';
-
+import Loader from '../components/Loader';
+import { toast } from 'react-toastify';
 import {
   listCategories,
   deleteCategory,
   createCategory,
 } from '../actions/categoryActions';
-
 import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
 
 const CategoryListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
+
+  const [name, setName] = useState('');
   const [keyword, setKeyword] = useState('');
 
   const categoryList = useSelector((state) => state.categoryList);
@@ -42,7 +42,7 @@ const CategoryListScreen = ({ history, match }) => {
       history.push('/login');
     }
     if (successCreate) {
-      history.push(`/admin/categories/${createdCategory._id}/edit`);
+      history.push('/admin/categories/');
     }
     dispatch(listCategories());
   }, [
@@ -59,10 +59,16 @@ const CategoryListScreen = ({ history, match }) => {
       dispatch(deleteCategory(id));
     }
   };
-  const createCategoryHandler = () => {
-    dispatch(createCategory());
+  const createCategoryHandler = (e) => {
+    e.preventDefault();
+    try {
+      dispatch(createCategory(name));
+      toast.success(`${name} is created.`);
+      setName('');
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
-
   const searched = (keyword) => (categories) =>
     categories.name.toLowerCase().includes(keyword);
 
@@ -70,12 +76,7 @@ const CategoryListScreen = ({ history, match }) => {
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Create Categories</h1>
-        </Col>
-        <Col className='text-right'>
-          <Button className='my-3 ' onClick={createCategoryHandler}>
-            <i className='fas fa-plus'></i> Create Category
-          </Button>
+          <h1>Categories</h1>
         </Col>
       </Row>
 
@@ -85,12 +86,9 @@ const CategoryListScreen = ({ history, match }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : categories.length === 0 ? (
-        <Message>There is no categories to show. Please create some.</Message>
       ) : (
         <>
           <LocalSearch keyword={keyword} setKeyword={setKeyword} />
-
           <Table striped bordered hover responsive className='table-sm mt-4'>
             <thead>
               <tr>
@@ -128,6 +126,28 @@ const CategoryListScreen = ({ history, match }) => {
               })}
             </tbody>
           </Table>
+          {categories.length === 0 && (
+            <Message>
+              There is no categories to show. Please create some.
+            </Message>
+          )}
+          <Form onSubmit={createCategoryHandler}>
+            <Form.Group controlId='name'>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder='Enter name'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+                required
+              ></Form.Control>
+            </Form.Group>
+
+            <Button type='submit' variant='primary'>
+              Add Category
+            </Button>
+          </Form>
         </>
       )}
     </>

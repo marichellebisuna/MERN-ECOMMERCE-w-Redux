@@ -88,7 +88,7 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
   }
 };
 
-export const createCategory = () => async (dispatch, getState) => {
+export const createCategory = (name) => async (dispatch, getState) => {
   try {
     dispatch({ type: CATEGORY_CREATE_REQUEST });
 
@@ -102,7 +102,7 @@ export const createCategory = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.post(`/api/categories`, {}, config);
+    const { data } = await axios.post(`/api/categories`, { name }, config);
 
     dispatch({
       type: CATEGORY_CREATE_SUCCESS,

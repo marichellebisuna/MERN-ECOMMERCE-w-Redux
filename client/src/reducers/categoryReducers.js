@@ -11,7 +11,6 @@ import {
   CATEGORY_DETAILS_SUCCESS,
   CATEGORY_LIST_FAIL,
   CATEGORY_LIST_REQUEST,
-  CATEGORY_LIST_RESET,
   CATEGORY_LIST_SUCCESS,
   CATEGORY_UPDATE_FAIL,
   CATEGORY_UPDATE_REQUEST,
@@ -40,8 +39,7 @@ export const categoryListReducer = (
         loading: false,
         error: action.payload,
       };
-    case CATEGORY_LIST_RESET:
-      return {};
+
     default:
       return state;
   }

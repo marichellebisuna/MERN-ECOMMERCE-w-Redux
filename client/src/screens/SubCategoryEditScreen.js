@@ -5,35 +5,29 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-
+import { toast } from 'react-toastify';
 import {
   listSubCategoryDetails,
   updateSubCategory,
 } from '../actions/subCategoryActions';
-import {
-  SUB_CATEGORY_CREATE_RESET,
-  SUB_CATEGORY_DETAILS_RESET,
-  SUB_CATEGORY_UPDATE_RESET,
-} from '../constants/subCategoryConstants';
-import slugify from 'slugify';
-import { toast } from 'react-toastify';
 import { listCategories } from '../actions/categoryActions';
+import { SUB_CATEGORY_UPDATE_RESET } from '../constants/subCategoryConstants';
 
 const SubCategoryEditScreen = ({ match, history }) => {
   const subCategoryId = match.params.id;
 
   const [name, setName] = useState('');
 
-  const [slug, setSlug] = useState('');
-
   const dispatch = useDispatch();
   const [parent, setParent] = useState('');
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const categoryList = useSelector((state) => state.categoryList);
   const {
     loading: categoriesLoading,
     error: categoriesError,
-
     categories,
   } = categoryList;
 
@@ -44,9 +38,11 @@ const SubCategoryEditScreen = ({ match, history }) => {
   const { error: errorUpdate, success: successUpdate } = subCategoryUpdate;
 
   useEffect(() => {
+    if (!userInfo.isAdmin) {
+      history.push('/login');
+    }
     if (successUpdate) {
       dispatch({ type: SUB_CATEGORY_UPDATE_RESET });
-
       history.push('/admin/subcategories');
     } else {
       if (!subCategory || subCategory._id !== subCategoryId) {
@@ -54,12 +50,11 @@ const SubCategoryEditScreen = ({ match, history }) => {
       } else {
         setName(subCategory.name);
         setParent(subCategory.parent);
-        setSlug(slugify(subCategory.name).toLowerCase());
       }
     }
 
     dispatch(listCategories());
-  }, [dispatch, history, subCategoryId, subCategory, successUpdate]);
+  }, [dispatch, history, subCategoryId, subCategory, successUpdate, userInfo]);
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
@@ -67,7 +62,6 @@ const SubCategoryEditScreen = ({ match, history }) => {
         _id: subCategoryId,
         name,
         parent,
-        slug: slugify(name),
       })
     )
       .then(toast.success(`${name} is created.`))
