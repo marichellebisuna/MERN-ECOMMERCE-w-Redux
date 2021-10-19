@@ -3,13 +3,12 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
-import LocalSearch from '../components/forms/localSearch';
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
-import DatePicker from 'react-datepicker';
-import DayPicker from 'react-day-picker';
+import Searchbox from '../components/coupons/Searchbox';
+import Paginate from '../components/coupons/Paginate';
+import { Route } from 'react-router-dom';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 import {
   listCoupons,
   deleteCoupon,
@@ -18,16 +17,18 @@ import {
 import { COUPON_CREATE_RESET } from '../constants/couponConstants';
 
 const CouponListScreen = ({ history, match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
   const dispatch = useDispatch();
 
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState(new Date());
   const [discount, setDiscount] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
 
   const couponList = useSelector((state) => state.couponList);
-  const { loading, error, coupons } = couponList;
-  console.log(coupons);
+  const { loading, error, coupons, pages, page } = couponList;
+
   const couponDelete = useSelector((state) => state.couponDelete);
   const { success: successDelete } = couponDelete;
 
@@ -50,7 +51,7 @@ const CouponListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push('/admin/coupons');
     }
-    dispatch(listCoupons());
+    dispatch(listCoupons(keyword, pageNumber));
   }, [
     dispatch,
     history,
@@ -58,6 +59,8 @@ const CouponListScreen = ({ history, match }) => {
     successCreate,
     successDelete,
     createdCoupon,
+    keyword,
+    pageNumber,
   ]);
 
   const deleteHandler = (id) => {
@@ -90,8 +93,11 @@ const CouponListScreen = ({ history, match }) => {
     }
     setExpiry(expiry);
   };
-  const searched = (keyword) => (coupons) =>
-    coupons.name.toLowerCase().includes(keyword);
+  const handleOnChange = (e) => {
+    e.preventDefault();
+    setIsChecked(!isChecked);
+  };
+
   return (
     <>
       <Row className='align-items-center'>
@@ -108,10 +114,14 @@ const CouponListScreen = ({ history, match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+          <Route render={({ history }) => <Searchbox history={history} />} />
+
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
+                <th>
+                  <input type='checkbox' />
+                </th>
                 <th>NAME </th>
                 <th>DISCOUNT </th>
                 <th>Expiry</th>
@@ -121,9 +131,23 @@ const CouponListScreen = ({ history, match }) => {
             </thead>
 
             <tbody>
-              {coupons.filter(searched(keyword)).map((coupon) => {
+              {coupons.map((coupon) => {
                 return (
                   <tr key={coupon._id}>
+                    <td>
+                      {' '}
+                      <Form.Group
+                        className='mb-3'
+                        controlId='formBasicCheckbox'
+                      >
+                        <Form.Check
+                          type='checkbox'
+                          value={coupon._id}
+                          checked={isChecked}
+                          onChange={(e) => setIsChecked(e.target.checked)}
+                        />
+                      </Form.Group>
+                    </td>
                     <td>{coupon.name}</td>
                     <td>{coupon.discount}</td>
                     <td>{coupon.expiry}</td>
@@ -147,8 +171,9 @@ const CouponListScreen = ({ history, match }) => {
               })}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} keyword={keyword && keyword} />
           {coupons.length === 0 && (
-            <Message>There is no coupons to show. Please create some.</Message>
+            <Message>There is no coupons to show. </Message>
           )}
           <Form onSubmit={createCouponHandler}>
             <Form.Group controlId='name'>
@@ -173,17 +198,10 @@ const CouponListScreen = ({ history, match }) => {
                 required
               ></Form.Control>
             </Form.Group>
-            {/* <Form.Group controlId='name'>
-              <Form.Label className='pr-5 '>Expiry Date</Form.Label>
-              <DayPicker
-                onDayClick={handleDayClick}
-                selectedDays={expiry}
-                disabledDays={{ daysOfWeek: [0] }}
-              />
-            </Form.Group> */}
+
             <Form.Group controlId='name'>
               <Form.Label className='pr-5 '>Expiry Date</Form.Label>
-              <DayPickerInput onDayChange={handleDayClick} />
+              <DayPickerInput onDayChange={handleDayClick} value={expiry} />
             </Form.Group>
             <Button
               type='submit'

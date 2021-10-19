@@ -32,7 +32,9 @@ export const subCategoryListReducer = (
       return {
         loading: false,
         success: true,
-        subCategories: action.payload,
+        subCategories: action.payload.subCategories,
+        page: action.payload.page,
+        pages: action.payload.pages,
       };
     case SUB_CATEGORY_LIST_FAIL:
       return {

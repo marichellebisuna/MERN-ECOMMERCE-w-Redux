@@ -59,6 +59,8 @@ import {
   couponDetailsReducer,
   couponListReducer,
   couponUpdateReducer,
+  couponCountReducer,
+  couponsBySearchReducer,
 } from './reducers/couponReducers';
 
 const reducer = combineReducers({
@@ -90,6 +92,8 @@ const reducer = combineReducers({
   couponDelete: couponDeleteReducer,
   couponCreate: couponCreateReducer,
   couponUpdate: couponUpdateReducer,
+  couponCount: couponCountReducer,
+  couponsBySearch: couponsBySearchReducer,
   cart: cartReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,

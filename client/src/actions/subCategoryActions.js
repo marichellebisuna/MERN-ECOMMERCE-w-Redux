@@ -19,25 +19,29 @@ import {
 } from '../constants/subCategoryConstants';
 import { logout } from './userActions';
 
-export const listSubCategories = () => async (dispatch) => {
-  dispatch({ type: SUB_CATEGORY_LIST_REQUEST });
-  try {
-    const { data } = await axios.get(`/api/subcategories`);
+export const listSubCategories =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    dispatch({ type: SUB_CATEGORY_LIST_REQUEST });
+    try {
+      const { data } = await axios.get(
+        `/api/subcategories?keyword=${keyword}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: SUB_CATEGORY_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: SUB_CATEGORY_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: SUB_CATEGORY_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: SUB_CATEGORY_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listSubCategoryDetails = (id) => async (dispatch, getState) => {
   try {

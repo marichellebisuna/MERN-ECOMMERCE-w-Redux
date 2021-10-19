@@ -33,6 +33,7 @@ import { useDispatch } from 'react-redux';
 import MapScreen from './screens/MapScreen';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-day-picker/lib/style.css';
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -69,9 +70,23 @@ function App() {
             exact
           />
           <Route path='/product/:id' component={ProductScreen} />
-
           <Route
             path='/admin/categories'
+            component={CategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/categories/search/keyword/:keyword'
+            component={CategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/categories/page/:pageNumber'
+            component={CategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/categories/search/keyword/:keyword/page/:pageNumber'
             component={CategoryListScreen}
             exact
           />
@@ -80,9 +95,23 @@ function App() {
             component={CategoryEditScreen}
             exact
           />
-
           <Route
             path='/admin/subcategories'
+            component={SubCategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/subcategories/search/keyword/:keyword'
+            component={SubCategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/subcategories/page/:pageNumber'
+            component={SubCategoryListScreen}
+            exact
+          />
+          <Route
+            path='/admin/subcategories/search/keyword/:keyword/page/:pageNumber'
             component={SubCategoryListScreen}
             exact
           />
@@ -91,17 +120,46 @@ function App() {
             component={SubCategoryEditScreen}
             exact
           />
-
           <Route path='/admin/brands' component={BrandListScreen} exact />
           <Route
             path='/admin/brands/:id/edit'
             component={BrandEditScreen}
             exact
           />
+          <Route
+            path='/admin/brands/search/keyword/:keyword'
+            component={BrandListScreen}
+            exact
+          />
+          <Route
+            path='/admin/brands/page/:pageNumber'
+            component={BrandListScreen}
+            exact
+          />
+          <Route
+            path='/admin/brands/search/keyword/:keyword/page/:pageNumber'
+            component={BrandListScreen}
+            exact
+          />
           <Route path='/admin/coupons' component={CouponListScreen} exact />
           <Route
             path='/admin/coupons/:id/edit'
             component={CouponEditScreen}
+            exact
+          />{' '}
+          <Route
+            path='/admin/coupons/search/keyword/:keyword'
+            component={CouponListScreen}
+            exact
+          />
+          <Route
+            path='/admin/coupons/page/:pageNumber'
+            component={CouponListScreen}
+            exact
+          />
+          <Route
+            path='/admin/coupons/search/keyword/:keyword/page/:pageNumber'
+            component={CouponListScreen}
             exact
           />
           <Route path='/admin/dashboard' component={DashboardScreen} />

@@ -3,20 +3,24 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
-import LocalSearch from '../components/forms/localSearch';
+import Paginate from '../components/brands/Paginate';
+import Searchbox from '../components/brands/Searchbox';
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { listBrands, deleteBrand, createBrand } from '../actions/brandActions';
 import { BRAND_CREATE_RESET } from '../constants/brandConstants';
+import { Route } from 'react-router-dom';
 
 const BrandListScreen = ({ history, match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
+
   const dispatch = useDispatch();
 
   const [name, setName] = useState('');
-  const [keyword, setKeyword] = useState('');
 
   const brandList = useSelector((state) => state.brandList);
-  const { loading, error, brands } = brandList;
+  const { loading, error, brands, pages, page } = brandList;
 
   const brandDelete = useSelector((state) => state.brandDelete);
   const { success: successDelete } = brandDelete;
@@ -40,8 +44,17 @@ const BrandListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push('/admin/brands');
     }
-    dispatch(listBrands());
-  }, [dispatch, history, userInfo, successCreate, successDelete, createdBrand]);
+    dispatch(listBrands(keyword, pageNumber));
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successCreate,
+    successDelete,
+    createdBrand,
+    keyword,
+    pageNumber,
+  ]);
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
@@ -58,8 +71,7 @@ const BrandListScreen = ({ history, match }) => {
       toast.error(err.message);
     }
   };
-  const searched = (keyword) => (brands) =>
-    brands.name.toLowerCase().includes(keyword);
+
   return (
     <>
       <Row className='align-items-center'>
@@ -76,7 +88,7 @@ const BrandListScreen = ({ history, match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+          <Route render={({ history }) => <Searchbox history={history} />} />
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
@@ -87,7 +99,7 @@ const BrandListScreen = ({ history, match }) => {
               </tr>
             </thead>
             <tbody>
-              {brands.filter(searched(keyword)).map((brand) => {
+              {brands.map((brand) => {
                 return (
                   <tr key={brand._id}>
                     <td>{brand._id}</td>
@@ -112,8 +124,9 @@ const BrandListScreen = ({ history, match }) => {
               })}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} keyword={keyword && keyword} />
           {brands.length === 0 && (
-            <Message>There are no brands to show. Please create some.</Message>
+            <Message>There are no brands to show.</Message>
           )}
           <Form onSubmit={createBrandHandler}>
             <Form.Group controlId='name'>

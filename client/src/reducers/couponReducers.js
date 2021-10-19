@@ -14,6 +14,13 @@ import {
   COUPON_LIST_REQUEST,
   COUPON_LIST_RESET,
   COUPON_LIST_SUCCESS,
+  COUPON_COUNT_FAIL,
+  COUPON_COUNT_REQUEST,
+  COUPON_COUNT_SUCCESS,
+  COUPON_SEARCH_FAIL,
+  COUPON_SEARCH_REQUEST,
+  COUPON_SEARCH_RESET,
+  COUPON_SEARCH_SUCCESS,
   COUPON_UPDATE_FAIL,
   COUPON_UPDATE_REQUEST,
   COUPON_UPDATE_RESET,
@@ -34,7 +41,9 @@ export const couponListReducer = (
       return {
         loading: false,
         success: true,
-        coupons: action.payload,
+        coupons: action.payload.coupons,
+        page: action.payload.page,
+        pages: action.payload.pages,
       };
     case COUPON_LIST_FAIL:
       return {
@@ -43,6 +52,51 @@ export const couponListReducer = (
       };
     case COUPON_LIST_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+export const couponsBySearchReducer = (state = { loading: true }, action) => {
+  switch (action.type) {
+    case COUPON_SEARCH_REQUEST:
+      return {
+        loading: true,
+      };
+    case COUPON_SEARCH_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        coupons: action.payload,
+      };
+    case COUPON_SEARCH_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case COUPON_SEARCH_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+export const couponCountReducer = (state = { loading: true }, action) => {
+  switch (action.type) {
+    case COUPON_COUNT_REQUEST:
+      return {
+        loading: true,
+      };
+    case COUPON_COUNT_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+        coupons: action.payload,
+      };
+    case COUPON_COUNT_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
     default:
       return state;
   }

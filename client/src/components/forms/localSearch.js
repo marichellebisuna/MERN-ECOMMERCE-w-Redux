@@ -14,7 +14,7 @@ const localSearch = ({ keyword, setKeyword }) => {
             <Form.Group controlId='name'>
               <Form.Control
                 type='text'
-                placeholder='Filter'
+                placeholder='Search here...'
                 value={keyword}
                 onChange={handleSearchChange}
                 autoFocus

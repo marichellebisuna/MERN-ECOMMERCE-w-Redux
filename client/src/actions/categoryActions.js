@@ -18,25 +18,29 @@ import {
 } from '../constants/categoryConstants';
 import { logout } from './userActions';
 
-export const listCategories = () => async (dispatch) => {
-  dispatch({ type: CATEGORY_LIST_REQUEST });
-  try {
-    const { data } = await axios.get(`/api/categories`);
+export const listCategories =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    dispatch({ type: CATEGORY_LIST_REQUEST });
+    try {
+      const { data } = await axios.get(
+        `/api/categories?keyword=${keyword}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: CATEGORY_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: CATEGORY_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: CATEGORY_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: CATEGORY_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listCategoryDetails = (id) => async (dispatch, getState) => {
   try {

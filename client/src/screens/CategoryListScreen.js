@@ -3,8 +3,10 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
-import LocalSearch from '../components/forms/localSearch';
 import Loader from '../components/Loader';
+import Searchbox from '../components/categories/Searchbox';
+import Paginate from '../components/categories/Paginate';
+import { Route } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   listCategories,
@@ -14,13 +16,14 @@ import {
 import { CATEGORY_CREATE_RESET } from '../constants/categoryConstants';
 
 const CategoryListScreen = ({ history, match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
   const dispatch = useDispatch();
 
   const [name, setName] = useState('');
-  const [keyword, setKeyword] = useState('');
 
   const categoryList = useSelector((state) => state.categoryList);
-  const { loading, error, categories } = categoryList;
+  const { loading, error, categories, pages, page } = categoryList;
 
   const categoryDelete = useSelector((state) => state.categoryDelete);
   const { success: successDelete } = categoryDelete;
@@ -44,7 +47,7 @@ const CategoryListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push('/admin/categories/');
     }
-    dispatch(listCategories());
+    dispatch(listCategories(keyword, pageNumber));
   }, [
     dispatch,
     history,
@@ -52,6 +55,8 @@ const CategoryListScreen = ({ history, match }) => {
     successCreate,
     successDelete,
     createdCategory,
+    keyword,
+    pageNumber,
   ]);
 
   const deleteHandler = (id) => {
@@ -69,8 +74,6 @@ const CategoryListScreen = ({ history, match }) => {
       toast.error(err.message);
     }
   };
-  const searched = (keyword) => (categories) =>
-    categories.name.toLowerCase().includes(keyword);
 
   return (
     <>
@@ -88,7 +91,7 @@ const CategoryListScreen = ({ history, match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+          <Route render={({ history }) => <Searchbox history={history} />} />
           <Table striped bordered hover responsive className='table-sm mt-4'>
             <thead>
               <tr>
@@ -99,7 +102,7 @@ const CategoryListScreen = ({ history, match }) => {
               </tr>
             </thead>
             <tbody>
-              {categories.filter(searched(keyword)).map((category) => {
+              {categories.map((category) => {
                 return (
                   <tr key={category._id}>
                     <td>{category._id}</td>
@@ -126,6 +129,7 @@ const CategoryListScreen = ({ history, match }) => {
               })}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} keyword={keyword && keyword} />
           {categories.length === 0 && (
             <Message>
               There is no categories to show. Please create some.

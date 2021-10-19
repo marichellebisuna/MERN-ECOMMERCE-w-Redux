@@ -12,6 +12,9 @@ import {
   COUPON_LIST_FAIL,
   COUPON_LIST_REQUEST,
   COUPON_LIST_SUCCESS,
+  COUPON_COUNT_FAIL,
+  COUPON_COUNT_REQUEST,
+  COUPON_COUNT_SUCCESS,
   COUPON_UPDATE_FAIL,
   COUPON_UPDATE_REQUEST,
   COUPON_UPDATE_RESET,
@@ -19,10 +22,43 @@ import {
 } from '../constants/couponConstants';
 import { logout } from './userActions';
 
-export const listCoupons = () => async (dispatch) => {
-  dispatch({ type: COUPON_LIST_REQUEST });
+export const listCoupons =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    dispatch({ type: COUPON_LIST_REQUEST });
+    try {
+      const { data } = await axios.get(
+        `/api/coupons?keyword=${keyword}&pageNumber=${pageNumber}`
+      );
+
+      dispatch({
+        type: COUPON_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: COUPON_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export const listCouponsBySearch = (page) => async (dispatch, getState) => {
   try {
-    const { data } = await axios.get(`/api/coupons`);
+    dispatch({ type: COUPON_LIST_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.post(`/api/coupons`, { page }, config);
 
     dispatch({
       type: COUPON_LIST_SUCCESS,
@@ -39,6 +75,34 @@ export const listCoupons = () => async (dispatch) => {
   }
 };
 
+export const getCouponsCount = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: COUPON_COUNT_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/coupons/total`, config);
+
+    dispatch({
+      type: COUPON_COUNT_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: COUPON_COUNT_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 export const listCouponDetails = (id) => async (dispatch, getState) => {
   try {
     dispatch({ type: COUPON_DETAILS_REQUEST, payload: id });

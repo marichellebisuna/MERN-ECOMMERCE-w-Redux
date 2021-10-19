@@ -18,25 +18,29 @@ import {
 } from '../constants/brandConstants';
 import { logout } from './userActions';
 
-export const listBrands = () => async (dispatch) => {
-  dispatch({ type: BRAND_LIST_REQUEST });
-  try {
-    const { data } = await axios.get(`/api/brands`);
+export const listBrands =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    dispatch({ type: BRAND_LIST_REQUEST });
+    try {
+      const { data } = await axios.get(
+        `/api/brands?keyword=${keyword}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: BRAND_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: BRAND_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: BRAND_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: BRAND_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listBrandDetails = (id) => async (dispatch, getState) => {
   try {

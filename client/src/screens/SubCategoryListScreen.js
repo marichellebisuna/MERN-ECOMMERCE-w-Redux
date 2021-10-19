@@ -3,7 +3,9 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col, Form } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
-import LocalSearch from '../components/forms/localSearch';
+import Searchbox from '../components/subcategories/Searchbox';
+import Paginate from '../components/subcategories/Paginate';
+import { Route } from 'react-router-dom';
 import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import {
@@ -15,19 +17,19 @@ import { SUB_CATEGORY_CREATE_RESET } from '../constants/subCategoryConstants';
 import { listCategories } from '../actions/categoryActions';
 
 const SubCategoryListScreen = ({ history, match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
   const dispatch = useDispatch();
 
   const [name, setName] = useState('');
-  const [keyword, setKeyword] = useState('');
+
   const [parent, setParent] = useState('');
 
   const subCategoryDetails = useSelector((state) => state.subCategoryDetails);
   const { subCategory } = subCategoryDetails;
-  console.log(subCategory);
 
   const subCategoryList = useSelector((state) => state.subCategoryList);
-  const { loading, error, subCategories } = subCategoryList;
-  console.log(subCategories);
+  const { loading, error, subCategories, pages, page } = subCategoryList;
 
   const subCategoryDelete = useSelector((state) => state.subCategoryDelete);
   const { success: successDelete } = subCategoryDelete;
@@ -54,7 +56,7 @@ const SubCategoryListScreen = ({ history, match }) => {
     if (successSubCreate) {
       history.push('/admin/subcategories');
     }
-    dispatch(listSubCategories());
+    dispatch(listSubCategories(keyword, pageNumber));
     dispatch(listCategories());
   }, [
     dispatch,
@@ -64,6 +66,8 @@ const SubCategoryListScreen = ({ history, match }) => {
     successDelete,
     createdSubCategory,
     subCategory,
+    keyword,
+    pageNumber,
   ]);
 
   const deleteHandler = (id) => {
@@ -74,7 +78,7 @@ const SubCategoryListScreen = ({ history, match }) => {
   };
   const createSubCategoryHandler = (e) => {
     e.preventDefault();
-    // dispatch(createSubCategory());
+
     try {
       dispatch(createSubCategory(name, parent));
       toast.success(`${name} is created.`);
@@ -83,8 +87,7 @@ const SubCategoryListScreen = ({ history, match }) => {
       toast.error(err.message);
     }
   };
-  const searched = (keyword) => (categories) =>
-    categories.name.toLowerCase().includes(keyword);
+
   return (
     <>
       <Row className='align-items-center'>
@@ -101,7 +104,7 @@ const SubCategoryListScreen = ({ history, match }) => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
-          <LocalSearch keyword={keyword} setKeyword={setKeyword} />
+          <Route render={({ history }) => <Searchbox history={history} />} />
           <Table
             striped
             bordered
@@ -117,7 +120,7 @@ const SubCategoryListScreen = ({ history, match }) => {
               </tr>
             </thead>
             <tbody>
-              {subCategories.filter(searched(keyword)).map((subCategory) => {
+              {subCategories.map((subCategory) => {
                 return (
                   <tr key={subCategory._id}>
                     <td>{subCategory.name}</td>
@@ -143,10 +146,9 @@ const SubCategoryListScreen = ({ history, match }) => {
               })}
             </tbody>
           </Table>
+          <Paginate pages={pages} page={page} keyword={keyword && keyword} />
           {subCategories.length === 0 && (
-            <Message>
-              There are no subcategories to show. Please create some.
-            </Message>
+            <Message>There are no subcategories to show.</Message>
           )}
           <Form.Label>Select Categories</Form.Label>
           <Form.Control

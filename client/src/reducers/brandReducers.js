@@ -33,7 +33,9 @@ export const brandListReducer = (
       return {
         loading: false,
         success: true,
-        brands: action.payload,
+        brands: action.payload.brands,
+        page: action.payload.page,
+        pages: action.payload.pages,
       };
     case BRAND_LIST_FAIL:
       return {
