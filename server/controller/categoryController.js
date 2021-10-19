@@ -6,9 +6,23 @@ import slugify from 'slugify';
 // @route  GET /api/categories
 // @access Private
 const getCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find({}).sort({ createdAt: -1 });
+  const pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i',
+        },
+      }
+    : {};
+  const count = await Category.countDocuments({ ...keyword });
+  const categories = await Category.find({ ...keyword })
+    .sort({ createdAt: -1 })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
   if (categories) {
-    return res.json(categories);
+    return res.json({ categories, page, pages: Math.ceil(count / pageSize) });
   }
   res.status(404);
   throw new Error('There are no categories created.');
@@ -47,28 +61,18 @@ const deleteCategory = asyncHandler(async (req, res) => {
 // @route  POST /api/categories/:slug
 // @access Private/Admin
 const createCategory = asyncHandler(async (req, res) => {
-  const name = req.body;
+  const { name } = req.body;
   const category = await new Category({
-    name: 'Sample category name' + Date.now(),
-    slug: slugify('Sample category name') + Date.now(),
+    name,
+    slug: slugify(name),
   });
   const createdCategory = await category.save();
-  if (category) {
-    res.status(201).json(category);
+  if (createdCategory) {
+    res.status(201).json(createdCategory);
   } else {
     res.status(404);
     throw new Error('Category create failed.');
   }
-
-  // const { name } = req.body;
-  // const category = await new Category({ name }).save();
-  // if (category) {
-  //   res.json(category);
-  //   // res.json(await new Category({ name, slug: slugify(name) }).save());
-  // } else {
-  //   // console.log(err);
-  //   res.status(400).send('Create category failed');
-  // }
 });
 
 // @desc   Update a category

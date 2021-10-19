@@ -6,9 +6,23 @@ import slugify from 'slugify';
 // @route  GET /api/brands
 // @access Private
 const getBrands = asyncHandler(async (req, res) => {
-  const brands = await Brand.find({}).sort({ createdAt: -1 });
+  const pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i',
+        },
+      }
+    : {};
+  const count = await Brand.countDocuments({ ...keyword });
+  const brands = await Brand.find({ ...keyword })
+    .sort({ createdAt: -1 })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
   if (brands) {
-    return res.json(brands);
+    return res.json({ brands, page, pages: Math.ceil(count / pageSize) });
   }
   res.status(404);
   throw new Error('There are no brands created.');
@@ -47,10 +61,10 @@ const deleteBrand = asyncHandler(async (req, res) => {
 // @route  POST /api/brands/:slug
 // @access Private/Admin
 const createBrand = asyncHandler(async (req, res) => {
-  const name = req.body;
+  const { name } = req.body;
   const brand = await new Brand({
-    name: 'Sample brand name' + Date.now(),
-    slug: slugify('Sample brand name') + Date.now(),
+    name,
+    slug: slugify(name),
   });
   const createdBrand = await brand.save();
   if (createdBrand) {

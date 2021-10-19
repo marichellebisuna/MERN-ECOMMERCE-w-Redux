@@ -6,12 +6,29 @@ import slugify from 'slugify';
 // @route  GET /api/subcategories
 // @access Private
 const getSubCategories = asyncHandler(async (req, res) => {
-  const subCategories = await SubCategory.find({})
+  const pageSize = 5;
+  const page = Number(req.query.pageNumber) || 1;
+  const keyword = req.query.keyword
+    ? {
+        name: {
+          $regex: req.query.keyword,
+          $options: 'i',
+        },
+      }
+    : {};
+  const count = await SubCategory.countDocuments({ ...keyword });
+  const subCategories = await SubCategory.find({ ...keyword })
     .sort({ createdAt: -1 })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
     .populate('parent', 'name');
 
   if (subCategories) {
-    return res.json(subCategories);
+    return res.json({
+      subCategories,
+      page,
+      pages: Math.ceil(count / pageSize),
+    });
   } else {
     res.status(404);
     throw new Error('There are no subcategories created.');
@@ -56,9 +73,9 @@ const deleteSubCategory = asyncHandler(async (req, res) => {
 const createSubCategory = asyncHandler(async (req, res) => {
   const { name, parent } = req.body;
   const subCategory = await new SubCategory({
-    name: 'Sample subcategory name' + Date.now(),
-    slug: slugify('Sample subcategory name') + Date.now(),
-    parent: await SubCategory.findOne().sort({ field: parent }).limit(1),
+    name,
+    slug: slugify(name),
+    parent,
   });
   const createdSubCategory = await subCategory.save();
   if (createdSubCategory) {

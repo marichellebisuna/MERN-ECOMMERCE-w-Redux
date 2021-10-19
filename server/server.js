@@ -1,18 +1,17 @@
 import path from 'path';
 import express from 'express';
-import bodyParser from 'body-parser';
 import MongoDb from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import morgan from 'morgan';
 import colors from 'colors';
 import productRoutes from './routes/productRoutes.js';
-
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import subCategoryRoutes from './routes/subCategoryRoutes.js';
 import brandRoutes from './routes/brandRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -23,7 +22,6 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 
@@ -35,6 +33,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subCategoryRoutes);
 app.use('/api/brands', brandRoutes);
+app.use('/api/coupons', couponRoutes);
 
 app.use(express.static('public'));
 app.get('/api/config/paypal', (req, res) =>
